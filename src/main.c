@@ -1,4 +1,4 @@
-#include <gb/gb.h>
+#include <gbdk/platform.h>
 #include <stdint.h>
 #include "graphics.h"
 #include "collision.h"
@@ -8,26 +8,33 @@
 
 void main(void)
 {
+#if defined(SEGA)
+    __WRITE_VDP_REG(VDP_R2, R2_MAP_0x3800);
+    __WRITE_VDP_REG(VDP_R5, R5_SAT_0x3F00);
+#endif
+
     initGfxMainMenu();
-    hero.x = 20;
-    hero.y = 10;
-    hero.speedX = 0;
-    hero.speedY = 0;
-    hero.state = 0;
-    hero.direction = 0;
+
+    initHero();
+    game.selectedSpecials = HERO_ATTACK_UPPERCUT;
 
     // Loop forever
     while (1)
     {
-
         // Game main loop processing goes here
-        handleInputsGameplay();
+        // handleInputsGameplay();
+        // updateHero();
 
-        //getCollisions();
+        hero.handleInput();
+        hero.update();
+        if (heroAttackHitbox.attribute & HITBOX_ACTIVE)
+        {
+            updateHitbox();
+        }
 
-        updateHero();
-
-        drawHero();
+        // drawHero();
+        hero.draw();
+        drawHitbox();
 
         // Done processing, yield CPU and wait for start of next frame
         wait_vbl_done();

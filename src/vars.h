@@ -3,8 +3,14 @@
 #include <gbdk/platform.h>
 #include "types.h"
 
-extern hero_t hero;
+extern character_t hero;
 BANKREF_EXTERN(hero)
+
+extern game_t game;
+BANKREF_EXTERN(game)
+
+extern hitbox_t heroAttackHitbox;
+BANKREF_EXTERN(heroAttackHitbox)
 
 /// @brief Inputs for current frame
 extern uint8_t joypadCurrent;

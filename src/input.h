@@ -3,7 +3,7 @@
 #ifndef __INPUT_H__
 #define __INPUT_H__
 
-/// @brief Handles inputs on main menu screen
-void handleInputsGameplay(void) NONBANKED;
+/// @brief Handles global inputs
+void globalInputs(void) NONBANKED;
 
 #endif

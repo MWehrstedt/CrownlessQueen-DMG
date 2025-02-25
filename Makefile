@@ -6,7 +6,7 @@
 # If you move this project you can change the directory 
 # to match your GBDK root directory (ex: GBDK_HOME = "C:/GBDK/"
 ifndef GBDK_HOME
-	GBDK_HOME = ../../../
+	GBDK_HOME = "D:/OneDrive/RetroDev/GameBoy/Tools/gbdk/"
 endif
 
 LCC = $(GBDK_HOME)bin/lcc 
@@ -17,8 +17,10 @@ ifdef GBDK_DEBUG
 endif
 
 
+LCCFLAGS += -Wl-yt0x19 -Wl-j -Wm-yoA -autobank -Wb-ext=.rel
+
 # You can set the name of the .gb ROM file here
-PROJECTNAME    = Example
+PROJECTNAME    = powl
 
 SRCDIR      = src
 OBJDIR      = obj

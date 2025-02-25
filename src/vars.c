@@ -1,12 +1,18 @@
-#include <gb/gb.h>
+// #include <gb/gb.h>
 #include <gbdk/platform.h>
 #include "vars.h"
 #include "types.h"
 
 #pragma bank 0
 
-hero_t hero;
+character_t hero;
 BANKREF(hero)
+
+game_t game;
+BANKREF(game)
+
+hitbox_t heroAttackHitbox;
+BANKREF(heroAttackHitbox)
 
 uint8_t joypadCurrent;
 BANKREF(joypadCurrent)

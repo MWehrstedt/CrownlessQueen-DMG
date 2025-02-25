@@ -20,19 +20,19 @@ void checkCollisionBackgroundX(void) BANKED
 {
     if (hero.speedX < 0)
     {
-        targetTileHorizontal.top = ((hero.x + hero.speedX + HITBOX_OFFSET_LEFT) / HITBOX_TILESIZE) + ((hero.y / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
+        targetTileHorizontal.top = ((hero.x + hero.speedX + HITBOX_OFFSET_LEFT) / HITBOX_TILESIZE) + (((hero.y + HITBOX_OFFSET_TOP) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
         targetTileHorizontal.center = ((hero.x + hero.speedX + HITBOX_OFFSET_LEFT) / HITBOX_TILESIZE) + (((hero.y + 12) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
         targetTileHorizontal.centerValue = hitmapPool[0][targetTileHorizontal.center];
 
-        targetTileHorizontal.bottom = ((hero.x + hero.speedX + HITBOX_OFFSET_LEFT) / HITBOX_TILESIZE) + (((hero.y + 24) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
+        targetTileHorizontal.bottom = ((hero.x + hero.speedX + HITBOX_OFFSET_LEFT) / HITBOX_TILESIZE) + (((hero.y + 24 - HITBOX_OFFSET_BOTTOM) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
     }
     else
     {
-        targetTileHorizontal.top = ((hero.x + hero.speedX + HITBOX_SIZE_X) / HITBOX_TILESIZE) + ((hero.y / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
-        targetTileHorizontal.center = ((hero.x + hero.speedX + HITBOX_SIZE_X) / HITBOX_TILESIZE) + (((hero.y + 12) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
+        targetTileHorizontal.top = ((hero.x + hero.speedX + HITBOX_SIZE_X - HITBOX_OFFSET_RIGHT) / HITBOX_TILESIZE) + (((hero.y + HITBOX_OFFSET_TOP) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
+        targetTileHorizontal.center = ((hero.x + hero.speedX + HITBOX_SIZE_X - HITBOX_OFFSET_RIGHT) / HITBOX_TILESIZE) + (((hero.y + 12) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
         targetTileHorizontal.centerValue = hitmapPool[0][targetTileHorizontal.center];
 
-        targetTileHorizontal.bottom = ((hero.x + hero.speedX + HITBOX_SIZE_X) / HITBOX_TILESIZE) + (((hero.y + 24) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
+        targetTileHorizontal.bottom = ((hero.x + hero.speedX + HITBOX_SIZE_X - HITBOX_OFFSET_RIGHT) / HITBOX_TILESIZE) + (((hero.y + 24 - HITBOX_OFFSET_BOTTOM) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
     }
 }
 
@@ -43,18 +43,19 @@ void checkCollisionBackgroundY(void) BANKED
     // Get tile collisions for hero
     if (hero.speedY < 0)
     {
-        targetTileVertical.top = (hero.x / HITBOX_TILESIZE) + (((hero.y + hero.speedY) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
-        targetTileVertical.center = ((hero.x + 8) / HITBOX_TILESIZE) + (((hero.y + hero.speedY) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
+        // Left
+        targetTileVertical.top = ((hero.x + HITBOX_OFFSET_LEFT) / HITBOX_TILESIZE) + (((hero.y + hero.speedY + HITBOX_OFFSET_TOP) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
+        targetTileVertical.center = ((hero.x + 8) / HITBOX_TILESIZE) + (((hero.y + hero.speedY + HITBOX_OFFSET_TOP) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
         targetTileVertical.centerValue = hitmapPool[0][targetTileVertical.center];
 
-        targetTileVertical.bottom = ((hero.x + 16) / HITBOX_TILESIZE) + (((hero.y + hero.speedY) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
+        targetTileVertical.bottom = ((hero.x + 16 - HITBOX_OFFSET_RIGHT) / HITBOX_TILESIZE) + (((hero.y + hero.speedY - HITBOX_OFFSET_BOTTOM) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
     }
     else
     {
-        targetTileVertical.top = (hero.x / HITBOX_TILESIZE) + (((hero.y + hero.speedY + HITBOX_SIZE_Y) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
+        targetTileVertical.top = ((hero.x + HITBOX_OFFSET_LEFT) / HITBOX_TILESIZE) + (((hero.y + hero.speedY + HITBOX_SIZE_Y + HITBOX_OFFSET_TOP) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
         targetTileVertical.center = ((hero.x + 8) / HITBOX_TILESIZE) + (((hero.y + hero.speedY + HITBOX_SIZE_Y) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
         targetTileVertical.centerValue = hitmapPool[0][targetTileVertical.center];
 
-        targetTileVertical.bottom = ((hero.x + 16) / HITBOX_TILESIZE) + (((hero.y + hero.speedY + HITBOX_SIZE_Y) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
+        targetTileVertical.bottom = ((hero.x + 16 - HITBOX_OFFSET_RIGHT) / HITBOX_TILESIZE) + (((hero.y + hero.speedY + HITBOX_SIZE_Y - HITBOX_OFFSET_BOTTOM) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
     }
 }
