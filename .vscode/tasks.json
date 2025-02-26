@@ -1,0 +1,116 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build all",
+            "type": "shell",
+            "command": "./compile.bat",
+            "args": [
+                "-nostart"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "never"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build all & start",
+            "type": "shell",
+            "command": "./compile.bat",
+            "args": [],
+            "group": "build",
+            "presentation": {
+                "reveal": "never"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build DMG",
+            "type": "shell",
+            "command": "./compile-dmg.bat",
+            "args": [
+                "-nostart"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "never"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build DMG & start",
+            "type": "shell",
+            "command": "./compile-dmg.bat",
+            "args": [],
+            "group": "build",
+            "presentation": {
+                "reveal": "never"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build GG",
+            "type": "shell",
+            "command": "./compile-gg.bat",
+            "args": [
+                "-nostart"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "never"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build GG & start",
+            "type": "shell",
+            "command": "./compile-gg.bat",
+            "args": [],
+            "group": "build",
+            "presentation": {
+                "reveal": "never"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Start all",
+            "type": "shell",
+            "command": "./compile.bat",
+            "args": [
+                "-nobuild"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "never"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Start DMG",
+            "type": "shell",
+            "command": "./compile-dmg.bat",
+            "args": [
+                "-nobuild"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "never"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Start GG",
+            "type": "shell",
+            "command": "./compile-gg.bat",
+            "args": [
+                "-nobuild"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "never"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

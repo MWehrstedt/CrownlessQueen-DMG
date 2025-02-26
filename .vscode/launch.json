@@ -7,8 +7,16 @@
         {
             "type": "emulicious-debugger",
             "request": "launch",
-            "name": "Launch in Emulicious",
+            "name": "Debug DMG",
             "program": "${workspaceFolder}/obj/powl.gb",
+            "port": 58870,
+            "stopOnEntry": true
+        },
+        {
+            "type": "emulicious-debugger",
+            "request": "launch",
+            "name": "Debug GG",
+            "program": "${workspaceFolder}/obj/powl.gg",
             "port": 58870,
             "stopOnEntry": true
         }

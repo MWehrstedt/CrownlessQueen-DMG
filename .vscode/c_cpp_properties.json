@@ -6,6 +6,9 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/include"
             ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true
+            },
             "defines": [
                 "_DEBUG",
                 "UNICODE",

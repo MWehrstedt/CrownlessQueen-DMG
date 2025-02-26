@@ -41,6 +41,17 @@ void initGfxMainMenu(void) BANKED
     set_sprite_tile(10, 1);
     set_sprite_tile(11, 1);
 
+
+    set_sprite_tile(20, 2);
+    set_sprite_tile(21, 2);
+    set_sprite_tile(22, 2);
+    set_sprite_tile(23, 2);
+    set_sprite_tile(24, 2);
+    set_sprite_tile(25, 2);
+    set_sprite_tile(26, 2);
+    set_sprite_tile(27, 2);
+    set_sprite_tile(28, 2);
+
     // DEBUG: assign hitbox sprites
     set_sprite_tile(12, 2);
     set_sprite_tile(13, 2);

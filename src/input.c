@@ -1,4 +1,3 @@
-//#include <gb/gb.h>
 #include <gbdk/platform.h>
 #include "hero.h"
 #include "input.h"

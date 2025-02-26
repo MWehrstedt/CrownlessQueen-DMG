@@ -1,8 +1,8 @@
-//#include <gb/gb.h>
 #include <gbdk/platform.h>
 #include "hero.h"
 #include "collision.h"
 #include "moves.h"
+#include "strategies.h"
 #include "vars.h"
 
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
@@ -13,20 +13,21 @@
 /// @brief Draw and animate hero sprite
 void drawHero(void) NONBANKED
 {
-    move_sprite(0, hero.drawX + DEVICE_SPRITE_PX_OFFSET_X, hero.drawY + DEVICE_SPRITE_PX_OFFSET_Y);
-    move_sprite(1, hero.drawX + DEVICE_SPRITE_PX_OFFSET_X + 8, hero.drawY + DEVICE_SPRITE_PX_OFFSET_Y);
-    move_sprite(2, hero.drawX + DEVICE_SPRITE_PX_OFFSET_X + 16, hero.drawY + DEVICE_SPRITE_PX_OFFSET_Y);
-    move_sprite(3, hero.drawX + DEVICE_SPRITE_PX_OFFSET_X, hero.drawY + DEVICE_SPRITE_PX_OFFSET_Y + 8);
-    move_sprite(4, hero.drawX + DEVICE_SPRITE_PX_OFFSET_X + 8, hero.drawY + DEVICE_SPRITE_PX_OFFSET_Y + 8);
-    move_sprite(5, hero.drawX + DEVICE_SPRITE_PX_OFFSET_X + 16, hero.drawY + DEVICE_SPRITE_PX_OFFSET_Y + 8);
-    move_sprite(6, hero.drawX + DEVICE_SPRITE_PX_OFFSET_X, hero.drawY + DEVICE_SPRITE_PX_OFFSET_Y + 16);
-    move_sprite(7, hero.drawX + DEVICE_SPRITE_PX_OFFSET_X + 8, hero.drawY + DEVICE_SPRITE_PX_OFFSET_Y + 16);
-    move_sprite(8, hero.drawX + DEVICE_SPRITE_PX_OFFSET_X + 16, hero.drawY + DEVICE_SPRITE_PX_OFFSET_Y + 16);
+    move_sprite(0, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y);
+    move_sprite(1, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + 8, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y);
+    move_sprite(2, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + 16, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y);
+    move_sprite(3, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + 8);
+    move_sprite(4, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + 8, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + 8);
+    move_sprite(5, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + 16, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + 8);
+    move_sprite(6, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + 16);
+    move_sprite(7, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + 8, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + 16);
+    move_sprite(8, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + 16, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + 16);
 }
-//BANKREF(drawHero)
+// BANKREF(drawHero)
 
 void initHero(void) NONBANKED
 {
+    hero.human = true;
     hero.draw = &drawHero;
     hero.handleInput = &heroInputs;
     hero.update = &updateHero;
@@ -37,19 +38,21 @@ void initHero(void) NONBANKED
     hero.state = 0;
     hero.direction = 0;
 
+    hero.strategyIndex = 0;
+
     heroAttackHitbox.counter = 0;
     heroAttackHitbox.attribute = 0;
 }
-//BANKREF(initHero)
+// BANKREF(initHero)
 
 /// @brief Main hero routine
 void updateHero(void) NONBANKED
 {
 
     // Apply gravity
-    if (hero.speedY < GAME_GRAVITY_MAX)
+    if (currentObject->speedY < GAME_GRAVITY_MAX)
     {
-        hero.speedY += GAME_GRAVITY_STEP;
+        currentObject->speedY += GAME_GRAVITY_STEP;
     }
 
     checkCollisionBackgroundX();
@@ -59,68 +62,85 @@ void updateHero(void) NONBANKED
     // Check horizontal collision
     if (targetTileHorizontal.centerValue == 1)
     {
-        if (hero.speedX > 0)
+        if (currentObject->speedX > 0)
         {
-            hero.speedX = -(hero.x + hero.speedX + HITBOX_SIZE_X) % HITBOX_TILESIZE + 2;
+            currentObject->speedX = -(currentObject->x + currentObject->speedX + HITBOX_SIZE_X) % HITBOX_TILESIZE + 2;
         }
-        else if (hero.speedX < 0)
+        else if (currentObject->speedX < 0)
         {
-            hero.speedX = HITBOX_TILESIZE - ((hero.x + hero.speedX + HITBOX_OFFSET_LEFT) % HITBOX_TILESIZE) - 2;
+            currentObject->speedX = HITBOX_TILESIZE - ((currentObject->x + currentObject->speedX + HITBOX_OFFSET_LEFT) % HITBOX_TILESIZE) - 2;
         }
     }
 
     // Check horizontal collision
     if (targetTileVertical.centerValue == 1)
     {
-        if (hero.speedY > 0)
+        if (currentObject->speedY > 0)
         {
-            hero.speedY -= ((hero.y + hero.speedY + HITBOX_SIZE_Y) % HITBOX_TILESIZE) - 1;
+            currentObject->speedY -= ((currentObject->y + currentObject->speedY + HITBOX_SIZE_Y) % HITBOX_TILESIZE) - 1;
 
             // Set grounded flag
-            hero.state |= HERO_STATE_GROUNDED;
-            hero.state &= ~HERO_STATE_JUMPING;
+            currentObject->state |= HERO_STATE_GROUNDED;
+            currentObject->state &= ~HERO_STATE_JUMPING;
         }
-        else if (hero.speedY < 0)
+        else if (currentObject->speedY < 0)
         {
-            hero.speedY = HITBOX_TILESIZE - ((hero.y + hero.speedY) % HITBOX_TILESIZE) - 1;
+            currentObject->speedY = HITBOX_TILESIZE - ((currentObject->y + currentObject->speedY) % HITBOX_TILESIZE) - 1;
         }
     }
 
-    hero.x += hero.speedX;
-    hero.y += hero.speedY;
+    // Check collision with enemy
+    if (!(currentObject->state & HERO_STATE_HURT) && currentObject->invulnerability == 0 && checkCollisionObject())
+    {
+        currentObject->state |= HERO_STATE_HURT;
+        currentObject->stateCounter = HERO_TIMER_HURT;
+
+        if (currentObject->direction & HERO_DIRECTION_LEFT)
+            currentObject->speedX = HERO_KNOCKBACK_HORIZONTAL;
+        else
+            currentObject->speedX = -HERO_KNOCKBACK_HORIZONTAL;
+
+        currentObject->speedY = HERO_KNOCKBACK_VERTICAL;
+    }
+
+    currentObject->x += currentObject->speedX;
+    currentObject->y += currentObject->speedY;
 
     // Update draw coordinates
-    if (hero.x < DEVICE_SCREEN_PX_WIDTH / 2)
+    if (currentObject->x < DEVICE_SCREEN_PX_WIDTH / 2)
     {
-        hero.drawX = hero.x;
-        move_bkg(0, 0);
+        currentObject->drawX = currentObject->x;
+        scrollX = 0;
+        // move_bkg(0, 0);
     }
-    else if (hero.x > 255 - (DEVICE_SCREEN_PX_WIDTH / 2))
+    else if (currentObject->x > 255 - (DEVICE_SCREEN_PX_WIDTH / 2))
     {
-        hero.drawX = hero.x - 95;
-        move_bkg(95, 0);
+        currentObject->drawX = currentObject->x - 95;
+        scrollX = 95;
+        // move_bkg(95, 0);
     }
     else
     {
-        hero.drawX = (DEVICE_SCREEN_PX_WIDTH / 2);
-        move_bkg(hero.x - 80, 0);
+        currentObject->drawX = (DEVICE_SCREEN_PX_WIDTH / 2);
+        scrollX = currentObject->x - 80;
+        // move_bkg(currentObject->x - 80, 0);
     }
 
-    hero.drawY = hero.y;
+    currentObject->drawY = currentObject->y;
 
-    if (hero.state & HERO_STATE_GROUNDED && hero.speedX > 0)
+    if (currentObject->state & HERO_STATE_GROUNDED && currentObject->speedX > 0)
     {
-        hero.speedX -= GAME_FRICTION;
+        currentObject->speedX -= GAME_FRICTION;
     }
-    else if (hero.state & HERO_STATE_GROUNDED && hero.speedX < 0)
+    else if (currentObject->state & HERO_STATE_GROUNDED && currentObject->speedX < 0)
     {
-        hero.speedX += GAME_FRICTION;
+        currentObject->speedX += GAME_FRICTION;
     }
 
     // Clear grounded flag if still in the air
-    if (hero.speedY != 0)
+    if (currentObject->speedY != 0)
     {
-        hero.state &= ~HERO_STATE_GROUNDED;
+        currentObject->state &= ~HERO_STATE_GROUNDED;
     }
 
     // Update attack counter if needed
@@ -128,9 +148,28 @@ void updateHero(void) NONBANKED
     {
         if ((--heroAttackHitbox.counter) == 0)
         {
-            hero.state &= ~HERO_STATE_ATTACKING;
+            currentObject->state &= ~HERO_STATE_ATTACKING;
             heroAttackHitbox.attribute &= ~HITBOX_ACTIVE;
         }
+    }
+
+    // Check if hero is hurt and count down
+    if (currentObject->state & HERO_STATE_HURT && !(--currentObject->stateCounter))
+    {
+        currentObject->invulnerability = HERO_TIMER_INVULNERABILITY;
+        currentObject->state &= ~HERO_STATE_HURT;
+    }
+
+    // Count down invulnerability
+    if (currentObject->invulnerability)
+    {
+        --currentObject->invulnerability;
+    }
+
+    // Update button index if CPU
+    if (!currentObject->human && ++currentObject->buttonIndex == 40)
+    {
+        currentObject->buttonIndex = 0;
     }
 }
 // BANKREF(updateHero)
@@ -215,47 +254,54 @@ BANKREF(updateWeapon)
 /// @brief Handles inputs on main menu screen
 void heroInputs(void) NONBANKED
 {
-    joypadCurrent = joypad();
+    if (currentObject->human)
+    {
+        *currentJoypad = joypad();
+    }
+    else
+    {
+        *currentJoypad = bossDbgStrategies[currentObject->strategyIndex][currentObject->buttonIndex];
+    }
 
     // If not attacking
-    if (!(hero.state & HERO_STATE_ATTACKING))
+    if (!(currentObject->state & HERO_STATE_ATTACKING) && !(currentObject->state & HERO_STATE_HURT))
     {
         // Movement
-        if (joypadCurrent & J_LEFT)
+        if (*currentJoypad & J_LEFT)
         {
-            hero.speedX = -HERO_WALK_SPEED;
-            hero.direction = HERO_DIRECTION_LEFT;
+            currentObject->speedX = -HERO_WALK_SPEED;
+            currentObject->direction = HERO_DIRECTION_LEFT;
         }
-        else if (joypadCurrent & J_RIGHT)
+        else if (*currentJoypad & J_RIGHT)
         {
-            hero.speedX = HERO_WALK_SPEED;
-            hero.direction = HERO_DIRECTION_RIGHT;
+            currentObject->speedX = HERO_WALK_SPEED;
+            currentObject->direction = HERO_DIRECTION_RIGHT;
         }
 
         // Jump
-        if (hero.state & HERO_STATE_GROUNDED && (joypadCurrent & J_A) && !(joypadPrevious & J_A))
+        if (currentObject->state & HERO_STATE_GROUNDED && (*currentJoypad & J_A) && !(*currentPreviousJoypad & J_A))
         {
-            hero.speedY = HERO_JUMP_SPEED;
-            hero.state |= HERO_STATE_JUMPING;
+            currentObject->speedY = HERO_JUMP_SPEED;
+            currentObject->state |= HERO_STATE_JUMPING;
         }
 
         // Charging
-        if (joypadCurrent & J_UP)
+        if (*currentJoypad & J_UP)
         {
-            hero.state |= HERO_STATE_CHARGING;
+            currentObject->state |= HERO_STATE_CHARGING;
         }
         else
         {
-            hero.state &= ~HERO_STATE_CHARGING;
+            currentObject->state &= ~HERO_STATE_CHARGING;
         }
 
         // Attack
-        if ((joypadCurrent & J_B) && !(joypadPrevious & J_B))
+        if ((*currentJoypad & J_B) && !(*currentPreviousJoypad & J_B))
         {
-            hero.state |= HERO_STATE_ATTACKING;
+            currentObject->state |= HERO_STATE_ATTACKING;
             setupMove();
         }
     }
 
-    joypadPrevious = joypadCurrent;
+    *currentPreviousJoypad = *currentJoypad;
 }

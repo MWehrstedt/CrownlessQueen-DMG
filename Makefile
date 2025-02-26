@@ -1,15 +1,23 @@
-#
-# A Makefile that compiles all .c and .s files in "src" and "res" 
-# subdirectories and places the output in a "obj" subdirectory
-#
-
-# If you move this project you can change the directory 
+# If you move this project you can change the directory
 # to match your GBDK root directory (ex: GBDK_HOME = "C:/GBDK/"
 ifndef GBDK_HOME
 	GBDK_HOME = "D:/OneDrive/RetroDev/GameBoy/Tools/gbdk/"
 endif
 
-LCC = $(GBDK_HOME)bin/lcc 
+LCC = $(GBDK_HOME)bin/lcc
+
+# Set platforms to build here, spaced separated. (These are in the separate Makefile.targets)
+# They can also be built/cleaned individually: "make gg" and "make gg-clean"
+# Possible are: gb gbc pocket megaduck sms gg
+TARGETS=gb gg
+
+# Configure platform specific LCC flags here:
+LCCFLAGS_gb      = -Wl-yt0x19 -autobank # Set an MBC for banking (1B-ROM+MBC5+RAM+BATT)
+LCCFLAGS_gg      = -autobank
+
+LCCFLAGS += $(LCCFLAGS_$(EXT)) # This adds the current platform specific LCC Flags
+
+LCCFLAGS += -Wl-j -Wm-yoA -Wb-ext=.rel -Wb-v # MBC + Autobanking 
 
 # GBDK_DEBUG = ON
 ifdef GBDK_DEBUG
@@ -17,50 +25,56 @@ ifdef GBDK_DEBUG
 endif
 
 
-LCCFLAGS += -Wl-yt0x19 -Wl-j -Wm-yoA -autobank -Wb-ext=.rel
-
-# You can set the name of the .gb ROM file here
-PROJECTNAME    = powl
+# You can set the name of the ROM file here
+PROJECTNAME = powl
 
 SRCDIR      = src
-OBJDIR      = obj
+OBJDIR      = obj/$(EXT)
 RESDIR      = res
-BINS	    = $(OBJDIR)/$(PROJECTNAME).gb
+BINDIR      = build/$(EXT)
+MKDIRS      = $(OBJDIR) $(BINDIR) # See bottom of Makefile for directory auto-creation
+
+BINS	    = $(OBJDIR)/$(PROJECTNAME).$(EXT)
 CSOURCES    = $(foreach dir,$(SRCDIR),$(notdir $(wildcard $(dir)/*.c))) $(foreach dir,$(RESDIR),$(notdir $(wildcard $(dir)/*.c)))
 ASMSOURCES  = $(foreach dir,$(SRCDIR),$(notdir $(wildcard $(dir)/*.s)))
 OBJS       = $(CSOURCES:%.c=$(OBJDIR)/%.o) $(ASMSOURCES:%.s=$(OBJDIR)/%.o)
 
-all:	prepare $(BINS)
-
-compile.bat: Makefile
-	@echo "REM Automatically generated from Makefile" > compile.bat
-	@make -sn | sed y/\\//\\\\/ | sed s/mkdir\ -p\/mkdir\/ | grep -v make >> compile.bat
+# Builds all targets sequentially
+all: $(TARGETS)
 
 # Compile .c files in "src/" to .o object files
 $(OBJDIR)/%.o:	$(SRCDIR)/%.c
-	$(LCC) $(LCCFLAGS) -c -o $@ $<
+	$(LCC) $(LCCFLAGS) $(CFLAGS) -c -o $@ $<
 
 # Compile .c files in "res/" to .o object files
 $(OBJDIR)/%.o:	$(RESDIR)/%.c
-	$(LCC) $(LCCFLAGS) -c -o $@ $<
+	$(LCC) $(LCCFLAGS) $(CFLAGS) -c -o $@ $<
 
 # Compile .s assembly files in "src/" to .o object files
 $(OBJDIR)/%.o:	$(SRCDIR)/%.s
-	$(LCC) $(LCCFLAGS) -c -o $@ $<
+	$(LCC) $(LCCFLAGS) $(CFLAGS) -c -o $@ $<
 
 # If needed, compile .c files in "src/" to .s assembly files
 # (not required if .c is compiled directly to .o)
 $(OBJDIR)/%.s:	$(SRCDIR)/%.c
-	$(LCC) $(LCCFLAGS) -S -o $@ $<
+	$(LCC) $(LCCFLAGS) $(CFLAGS) -S -o $@ $<
 
 # Link the compiled object files into a .gb ROM file
 $(BINS):	$(OBJS)
-	$(LCC) $(LCCFLAGS) -o $(BINS) $(OBJS)
-
-prepare:
-	mkdir -p $(OBJDIR)
+	$(LCC) $(LCCFLAGS) $(CFLAGS) -o $(BINDIR)/$(PROJECTNAME).$(EXT) $(OBJS)
 
 clean:
-#	rm -f  *.gb *.ihx *.cdb *.adb *.noi *.map
-	rm -f  $(OBJDIR)/*.*
+	@echo Cleaning
+	@for target in $(TARGETS); do \
+		$(MAKE) $$target-clean; \
+	done
 
+# Include available build targets
+include Makefile.targets
+
+
+# create necessary directories after Makefile is parsed but before build
+# info prevents the command from being pasted into the makefile
+ifneq ($(strip $(EXT)),)           # Only make the directories if EXT has been set by a target
+$(info $(shell mkdir -p $(MKDIRS)))
+endif

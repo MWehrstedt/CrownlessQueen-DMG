@@ -3,6 +3,7 @@
 #include "graphics.h"
 #include "collision.h"
 #include "hero.h"
+#include "boss_debug.h"
 #include "input.h"
 #include "vars.h"
 
@@ -16,25 +17,39 @@ void main(void)
     initGfxMainMenu();
 
     initHero();
+    initBossDbg();
     game.selectedSpecials = HERO_ATTACK_UPPERCUT;
 
     // Loop forever
     while (1)
     {
         // Game main loop processing goes here
-        // handleInputsGameplay();
-        // updateHero();
+        // Handle player input
+        currentObject = &hero;
+        currentJoypad = &joypadCurrent;
+        currentPreviousJoypad = &joypadPrevious;
 
-        hero.handleInput();
-        hero.update();
+        currentObject->handleInput();
+        currentObject->update();
         if (heroAttackHitbox.attribute & HITBOX_ACTIVE)
         {
             updateHitbox();
         }
 
-        // drawHero();
-        hero.draw();
+        move_bkg(scrollX, 0);
+
+        currentObject->draw();
+
         drawHitbox();
+
+        // Switch over to CPU handling
+        currentObject = &enemy;
+        currentJoypad = &joypadCurrent2;
+        currentPreviousJoypad = &joypadPrevious2;
+
+        currentObject->handleInput();
+        currentObject->update();
+        currentObject->draw();
 
         // Done processing, yield CPU and wait for start of next frame
         wait_vbl_done();

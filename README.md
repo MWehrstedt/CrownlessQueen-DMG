@@ -11,9 +11,8 @@ Think Mega Man bosses, but with a boxer. Made for DMG and Game Gear. It aims to 
 | Up + B | Up + 1 | Special Attack |
 
 # Compile
-Adjust paths to GDBK and your favourite emulator if necessary and run the make file or `compile.bat`. You can use `compile.bat -nostart` To just compile the game.
+Adjust paths to GDBK and your favourite emulator if necessary and run the makefile or `compile.bat`. You can use `compile.bat -nostart` To just compile the game.
 
-I have not modified the *makefile* for Game Gear support. If you want to compile for that platform, either use the `.bat` file or update the makefile yourself.
 
 ## Parameters
 ```
