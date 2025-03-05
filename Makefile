@@ -12,7 +12,7 @@ LCC = $(GBDK_HOME)bin/lcc
 TARGETS=gb gg
 
 # Configure platform specific LCC flags here:
-LCCFLAGS_gb      = -Wl-yt0x19 -autobank # Set an MBC for banking (1B-ROM+MBC5+RAM+BATT)
+LCCFLAGS_gb      = -Wl-yt0x19  -Wm-ys -autobank # Set an MBC for banking
 LCCFLAGS_gg      = -autobank
 
 LCCFLAGS += $(LCCFLAGS_$(EXT)) # This adds the current platform specific LCC Flags

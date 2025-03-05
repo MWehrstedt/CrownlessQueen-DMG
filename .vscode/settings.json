@@ -2,7 +2,9 @@
     "C_Cpp.default.compilerPath": "d:\\OneDrive\\RetroDev\\GameBoy\\Projects\\Owls\\bin\\lcc.exe",
     "files.associations": {
         "dungeon_tiles.h": "c",
-        "platform.h": "c"
+        "platform.h": "c",
+        "hero.h": "c",
+        "sgb.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

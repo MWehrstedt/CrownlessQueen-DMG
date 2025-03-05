@@ -6,6 +6,8 @@
 #define GAME_GRAVITY_MAX 5
 #define GAME_GRAVITY_STEP 1
 #define GAME_FRICTION 1
+#define GAME_MODE_SINGLE 0b00000001
+#define GAME_MODE_MULTI 0b00000010
 #define GAME_STATE_INTRO 0b00000001
 #define GAME_STATE_MAINMENU 0b00000010
 #define GAME_STATE_GAMEPLAY 0b00000011
@@ -53,7 +55,8 @@
 #define HERO_STATE_HURT 0b00001000
 #define HERO_WALK_SPEED (2)
 
-#define SPRITES_HERO_ID (0)
+#define OAM_HERO_SPRITEID (0)
+#define OAM_ENEMY_SPRITEID (20)
 
 typedef struct
 {
@@ -63,6 +66,8 @@ typedef struct
 	int8_t speedX;
 	int8_t speedY;
 	uint8_t buttonIndex;
+	uint8_t drawCounter;
+	uint8_t drawIndex;
 	uint8_t drawX;
 	uint8_t drawY;
 	uint8_t state;
@@ -75,6 +80,7 @@ typedef struct
 	void (*update)(void);
 	void (*draw)(void);
 	const uint8_t **strategy;
+	const int8_t **drawFrames;
 } character_t;
 
 typedef struct
@@ -111,5 +117,6 @@ typedef struct
 	uint8_t recovery;
 	uint8_t length;
 } move_t;
+
 
 #endif // !__TYPES_H__

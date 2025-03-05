@@ -1,4 +1,5 @@
 #include <gbdk/platform.h>
+#include "animations.h"
 #include "hero.h"
 #include "collision.h"
 #include "moves.h"
@@ -10,18 +11,48 @@
 
 #pragma bank 255
 
+void updateHeroDrawFrames(void)
+{
+    if (currentObject->state & HERO_STATE_HURT)
+    {
+        currentObject->drawFrames = heroHurtFrames;
+    }
+    else if (currentObject->state & HERO_STATE_JUMPING)
+    {
+        currentObject->drawFrames = heroJumpingFrames;
+    }
+    else if (currentObject->state & HERO_STATE_GROUNDED)
+    {
+        currentObject->drawFrames = heroIdleFrames;
+    }
+}
+
 /// @brief Draw and animate hero sprite
 void drawHero(void) NONBANKED
 {
-    move_sprite(0, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y);
-    move_sprite(1, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + 8, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y);
-    move_sprite(2, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + 16, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y);
-    move_sprite(3, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + 8);
-    move_sprite(4, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + 8, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + 8);
-    move_sprite(5, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + 16, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + 8);
-    move_sprite(6, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + 16);
-    move_sprite(7, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + 8, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + 16);
-    move_sprite(8, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + 16, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + 16);
+    // NOTE: current offset table breaks GG, maybe fixes itself when implementing flipped sprites
+    if (currentObject->direction == HERO_DIRECTION_RIGHT)
+    {
+        for (iterator = 0; iterator < 9; ++iterator)
+        {
+            set_sprite_tile(OAM_HERO_SPRITEID + iterator, currentObject->drawFrames[0][iterator] + currentObject->drawIndex);
+            set_sprite_prop(OAM_HERO_SPRITEID + iterator, S_FLIPX);
+            move_sprite(OAM_HERO_SPRITEID + iterator,
+                        currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + currentObject->drawFrames[2][iterator],
+                        currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + currentObject->drawFrames[3][iterator]);
+        }
+    }
+    else
+    {
+        for (iterator = 0; iterator < 9; ++iterator)
+        {
+            set_sprite_tile(OAM_HERO_SPRITEID + iterator, currentObject->drawFrames[0][iterator] + currentObject->drawIndex);
+            set_sprite_prop(OAM_HERO_SPRITEID + iterator, 0);
+            move_sprite(OAM_HERO_SPRITEID + iterator,
+                        currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + currentObject->drawFrames[1][iterator],
+                        currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + currentObject->drawFrames[3][iterator]);
+        }
+    }
 }
 // BANKREF(drawHero)
 
@@ -37,9 +68,11 @@ void initHero(void) NONBANKED
     hero.speedY = 0;
     hero.state = 0;
     hero.direction = 0;
+    hero.drawIndex = 0;
 
     hero.strategyIndex = 0;
     hero.strategy = dummyStrategy;
+    hero.drawFrames = heroJumpingFrames;
     hero.currentAttack = HERO_CURRENT_ATTACK_NONE;
 
     heroAttackHitbox.counter = 0;
@@ -51,16 +84,23 @@ void initHero(void) NONBANKED
 void updateHero(void) NONBANKED
 {
 
+    /*  ----------------
+        Gravity
+    ----------------*/
+
     // Apply gravity
     if (currentObject->speedY < GAME_GRAVITY_MAX)
     {
         currentObject->speedY += GAME_GRAVITY_STEP;
     }
 
+    /*  ----------------
+        Collision
+    ----------------*/
+
     checkCollisionBackgroundX();
     checkCollisionBackgroundY();
 
-    // Check background collisions
     // Check horizontal collision
     if (targetTileHorizontal.centerValue == 1)
     {
@@ -74,7 +114,7 @@ void updateHero(void) NONBANKED
         }
     }
 
-    // Check horizontal collision
+    // Check vertical collision
     if (targetTileVertical.centerValue == 1)
     {
         if (currentObject->speedY > 0)
@@ -105,6 +145,10 @@ void updateHero(void) NONBANKED
         currentObject->speedY = HERO_KNOCKBACK_VERTICAL;
     }
 
+    /*  ----------------
+            Speed and Scrolling
+        ----------------*/
+    // Apply new speed
     currentObject->x += currentObject->speedX;
     currentObject->y += currentObject->speedY;
 
@@ -130,6 +174,7 @@ void updateHero(void) NONBANKED
 
     currentObject->drawY = currentObject->y;
 
+    // Apply friction for next frame
     if (currentObject->state & HERO_STATE_GROUNDED && currentObject->speedX > 0)
     {
         currentObject->speedX -= GAME_FRICTION;
@@ -139,12 +184,19 @@ void updateHero(void) NONBANKED
         currentObject->speedX += GAME_FRICTION;
     }
 
+    /*  ----------------
+            Flags
+        ----------------*/
+
     // Clear grounded flag if still in the air
     if (currentObject->speedY != 0)
     {
         currentObject->state &= ~HERO_STATE_GROUNDED;
     }
 
+    /*  ----------------
+            Counters
+        ----------------*/
     // Update attack counter if needed
     if (heroAttackHitbox.attribute & HITBOX_ACTIVE)
     {
@@ -168,10 +220,23 @@ void updateHero(void) NONBANKED
         --currentObject->invulnerability;
     }
 
-    // Update button index if CPU
+    // Update animation frame offset
+    // TODO: insert logic to check animation length and update frequency
+
+    /*  ----------------
+            CPU Input
+        ----------------*/
     if (!currentObject->human && ++currentObject->buttonIndex == 40)
     {
         currentObject->buttonIndex = 0;
+    }
+
+    /*  ----------------
+            State handling
+        ----------------*/
+    if (*currentPreviousState != currentObject->state)
+    {
+        updateHeroDrawFrames();
     }
 }
 // BANKREF(updateHero)
@@ -246,6 +311,7 @@ void setupMove(void) BANKED
         break;
     }
 
+    // Set move metadata and activate hitbox
     heroAttackHitbox.counter = heroMoveFrames[hero.currentAttack].length;
     heroAttackHitbox.damage = heroMoveFrames[hero.currentAttack].damage;
     heroAttackHitbox.attribute |= HITBOX_ACTIVE;
@@ -261,6 +327,9 @@ BANKREF(updateWeapon)
 /// @brief Handles inputs on main menu screen
 void heroInputs(void) NONBANKED
 {
+    // Save previous inputs
+    *currentPreviousState = currentObject->state;
+
     if (currentObject->human)
     {
         *currentJoypad = joypad();

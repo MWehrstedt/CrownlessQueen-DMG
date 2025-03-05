@@ -3,18 +3,27 @@
 #include <gbdk/platform.h>
 #include "types.h"
 
+/// @brief Global level 1 iterator
+extern uint8_t iterator;
+BANKREF_EXTERN(iterator)
+
+/// @brief Player 1
 extern character_t hero;
 BANKREF_EXTERN(hero)
 
+/// @brief Enemy, player 2
 extern character_t enemy;
 BANKREF_EXTERN(enemy)
 
+/// @brief Game state manager
 extern game_t game;
 BANKREF_EXTERN(game)
 
+/// @brief Currently active character
 extern character_t *currentObject;
 BANKREF_EXTERN(currentObject)
 
+/// @brief Player 1 attack hitbox
 extern hitbox_t heroAttackHitbox;
 BANKREF_EXTERN(heroAttackHitbox)
 
@@ -42,6 +51,18 @@ BANKREF_EXTERN(currentJoypad)
 extern uint8_t *currentPreviousJoypad;
 BANKREF_EXTERN(currentPreviousJoypad)
 
+/// @brief Previous state for player 1
+extern uint8_t previousState1;
+BANKREF_EXTERN(previousState1)
+
+/// @brief Previous state for player 2
+extern uint8_t previousState2;
+BANKREF_EXTERN(previousState2)
+
+/// @brief Current previous state 
+extern uint8_t *currentPreviousState;
+BANKREF_EXTERN(currentPreviousState)
+
 /// @brief Collision tile horizontal
 extern targetTile_t targetTileHorizontal;
 
@@ -50,7 +71,5 @@ extern targetTile_t targetTileVertical;
 
 /// @brief Scroll X offset
 extern uint8_t scrollX;
-
-
 
 #endif // !__VARS_H__

@@ -3,16 +3,17 @@
 #ifndef __HERO_H__
 #define __HERO_H__
 
-/// @brief Draw and animate hero sprite
-void drawHero(void) NONBANKED;
-BANKREF_EXTERN(drawHero)
-
 /// @brief Initialize hero
 void initHero(void) NONBANKED;
 BANKREF_EXTERN(initHero)
 
 void drawHitbox(void) BANKED;
 BANKREF_EXTERN(drawHitbox)
+
+
+/// @brief Draw and animate hero sprite
+void drawHero(void) NONBANKED;
+BANKREF_EXTERN(drawHero)
 
 /// @brief Main hero routine
 void updateHero(void) NONBANKED;

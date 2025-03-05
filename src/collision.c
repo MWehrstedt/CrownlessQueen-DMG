@@ -63,6 +63,9 @@ void checkCollisionBackgroundY(void) BANKED
 BANKREF(checkCollisionObject)
 bool checkCollisionObject(void) BANKED
 {
+    // if (enemy.state & HERO_STATE_HURT)
+    //     return false;
+
     return hero.x + HITBOX_OFFSET_LEFT < enemy.x + HITBOX_OFFSET_LEFT + HITBOX_SIZE_X &&
            hero.x + HITBOX_SIZE_X - HITBOX_OFFSET_RIGHT > enemy.x + HITBOX_OFFSET_LEFT &&
            hero.y + HITBOX_OFFSET_TOP < enemy.y + HITBOX_SIZE_Y - HITBOX_OFFSET_BOTTOM &&

@@ -4,6 +4,9 @@
 
 #pragma bank 0
 
+uint8_t iterator;
+BANKREF(iterator)
+
 character_t hero;
 BANKREF(hero)
 
@@ -36,6 +39,15 @@ BANKREF(currentJoyPad)
 
 uint8_t *currentPreviousJoypad;
 BANKREF(currentPreviousJoypad)
+
+uint8_t previousState1;
+BANKREF(previousState1)
+
+uint8_t previousState2;
+BANKREF(previousState2)
+
+uint8_t *currentPreviousState;
+BANKREF(currentPreviousState)
 
 targetTile_t targetTileHorizontal;
 BANKREF(targetTileHorizontal)
