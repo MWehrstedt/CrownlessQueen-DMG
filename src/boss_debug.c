@@ -27,7 +27,7 @@ void initBossDbg(void) NONBANKED
 {
     enemy.human = false;
     enemy.draw = &drawBossDbg;
-    enemy.handleInput = &bossDbgInputs;
+    enemy.handleInput = &heroInputs;
     enemy.update = &updateBossDbg;
 
     enemy.x = 120;
@@ -38,41 +38,43 @@ void initBossDbg(void) NONBANKED
     enemy.direction = 0;
     enemy.buttonIndex = 0;
     enemy.strategyIndex = 0;
+    //enemy.strategy = dummyStrategy;
+    enemy.strategy = bossDbgStrategies;
 }
 BANKREF(initBossDbg)
 
 /// @brief Handles boss inputs
 void bossDbgInputs(void) NONBANKED
 {
-    if (currentObject->human)
-    {
-        *currentJoypad = joypad();
-    }
-    else
-    {
-        *currentJoypad = bossDbgStrategies[currentObject->strategyIndex][currentObject->buttonIndex];
-    }
+    // if (currentObject->human)
+    // {
+    //     *currentJoypad = joypad();
+    // }
+    // else
+    // {
+    //     *currentJoypad = currentObject->strategy[currentObject->strategyIndex][currentObject->buttonIndex];
+    // }
 
+    // // Jump
+    // if (currentObject->state & HERO_STATE_GROUNDED && (*currentJoypad & J_A) && !(*currentPreviousJoypad & J_A))
+    // {
+    //     currentObject->speedY = HERO_JUMP_SPEED;
+    //     currentObject->state |= HERO_STATE_JUMPING;
+    // }
 
-    // Jump
-    if (currentObject->state & HERO_STATE_GROUNDED && (*currentJoypad & J_A) && !(*currentPreviousJoypad & J_A))
-    {
-        currentObject->speedY = HERO_JUMP_SPEED;
-        currentObject->state |= HERO_STATE_JUMPING;
-    }
+    // // Movement
+    // if (*currentJoypad & J_RIGHT)
+    // {
+    //     currentObject->speedX = HERO_WALK_SPEED;
+    //     currentObject->direction = HERO_DIRECTION_RIGHT;
+    // }
+    // else if (*currentJoypad & J_LEFT)
+    // {
+    //     currentObject->speedX = -HERO_WALK_SPEED;
+    //     currentObject->direction = HERO_DIRECTION_LEFT;
+    // }
 
-    // Movement
-    if (*currentJoypad & J_RIGHT)
-    {
-        currentObject->speedX = HERO_WALK_SPEED;
-        currentObject->direction = HERO_DIRECTION_RIGHT;
-    } else if (*currentJoypad & J_LEFT)
-    {
-        currentObject->speedX = -HERO_WALK_SPEED;
-        currentObject->direction = HERO_DIRECTION_LEFT;
-    }
-
-    *currentPreviousJoypad = *currentJoypad;
+    // *currentPreviousJoypad = *currentJoypad;
 }
 BANKREF(bossDbgInputs)
 
@@ -120,6 +122,22 @@ void updateBossDbg(void) NONBANKED
         }
     }
 
+    // Check collision with player hitbox
+    // Check collision with enemy
+    if ((heroAttackHitbox.attribute & HITBOX_ACTIVE) && !(currentObject->state & HERO_STATE_HURT) && currentObject->invulnerability == 0 && checkCollisionHitbox())
+    {
+        currentObject->state |= HERO_STATE_HURT;
+        currentObject->stateCounter = HERO_TIMER_HURT;
+
+        if (currentObject->direction & HERO_DIRECTION_LEFT)
+            currentObject->speedX = HERO_KNOCKBACK_HORIZONTAL;
+        else
+            currentObject->speedX = -HERO_KNOCKBACK_HORIZONTAL;
+
+        currentObject->speedY = HERO_KNOCKBACK_VERTICAL;
+    }
+
+    // Apply speed
     currentObject->x += currentObject->speedX;
     currentObject->y += currentObject->speedY;
 
@@ -133,6 +151,19 @@ void updateBossDbg(void) NONBANKED
     else if (currentObject->state & HERO_STATE_GROUNDED && currentObject->speedX < 0)
     {
         currentObject->speedX += GAME_FRICTION;
+    }
+
+    // Check if hero is hurt and count down
+    if (currentObject->state & HERO_STATE_HURT && !(--currentObject->stateCounter))
+    {
+        currentObject->invulnerability = HERO_TIMER_INVULNERABILITY;
+        currentObject->state &= ~HERO_STATE_HURT;
+    }
+
+    // Count down invulnerability
+    if (currentObject->invulnerability)
+    {
+        --currentObject->invulnerability;
     }
 
     // Update button index if CPU

@@ -11,9 +11,6 @@ BANKREF_EXTERN(drawHero)
 void initHero(void) NONBANKED;
 BANKREF_EXTERN(initHero)
 
-/// @brief Handles inputs on main menu screen
-void heroInputs(void) NONBANKED;
-
 void drawHitbox(void) BANKED;
 BANKREF_EXTERN(drawHitbox)
 

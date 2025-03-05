@@ -18,4 +18,7 @@ BANKREF_EXTERN(checkCollisionBackgroundY)
 
 bool checkCollisionObject(void) BANKED;
 BANKREF_EXTERN(checkCollisionObject)
+
+bool checkCollisionHitbox(void) BANKED;
+BANKREF_EXTERN(checkCollisionHitbox)
 #endif

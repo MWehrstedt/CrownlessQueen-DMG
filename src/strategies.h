@@ -3,8 +3,17 @@
 #include "types.h"
 #include <gbdk/platform.h>
 
+/// @brief Don't do anything.
+static const uint8_t *dummyStrategy[1] = {
+    dummyPlan,
+};
+
+static const uint8_t dummyPlan[1] = {
+    0,
+};
+
 static const uint8_t *bossDbgStrategies[1] = {
-    bossDbgPlan1
+    bossDbgPlan1,
 };
 
 static const uint8_t bossDbgPlan1[40] = {

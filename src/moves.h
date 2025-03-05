@@ -1,6 +1,11 @@
+#include <gbdk/platform.h>
+
 #ifndef __MOVES_H__
 #define __MOVES_H__
 #include "types.h"
+
+/// @brief Handles inputs on main menu screen
+void heroInputs(void) NONBANKED;
 
 static const move_t heroMoveFrames[2] = {
     {0, 1, 9, 7, 13},

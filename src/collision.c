@@ -68,3 +68,12 @@ bool checkCollisionObject(void) BANKED
            hero.y + HITBOX_OFFSET_TOP < enemy.y + HITBOX_SIZE_Y - HITBOX_OFFSET_BOTTOM &&
            hero.y + HITBOX_SIZE_Y - HITBOX_OFFSET_BOTTOM > enemy.y + HITBOX_OFFSET_TOP;
 }
+
+BANKREF(checkCollisionHitbox)
+bool checkCollisionHitbox(void) BANKED
+{
+    return heroAttackHitbox.x + HITBOX_OFFSET_LEFT < enemy.x + HITBOX_OFFSET_LEFT + HITBOX_SIZE_X &&
+           heroAttackHitbox.x + HITBOX_SIZE_X - HITBOX_OFFSET_RIGHT > enemy.x + HITBOX_OFFSET_LEFT &&
+           heroAttackHitbox.y + HITBOX_OFFSET_TOP < enemy.y + HITBOX_SIZE_Y - HITBOX_OFFSET_BOTTOM &&
+           heroAttackHitbox.y + HITBOX_SIZE_Y - HITBOX_OFFSET_BOTTOM > enemy.y + HITBOX_OFFSET_TOP;
+}

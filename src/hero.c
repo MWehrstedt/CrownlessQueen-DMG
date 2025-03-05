@@ -39,6 +39,8 @@ void initHero(void) NONBANKED
     hero.direction = 0;
 
     hero.strategyIndex = 0;
+    hero.strategy = dummyStrategy;
+    hero.currentAttack = HERO_CURRENT_ATTACK_NONE;
 
     heroAttackHitbox.counter = 0;
     heroAttackHitbox.attribute = 0;
@@ -224,10 +226,15 @@ void setupMove(void) BANKED
     case HERO_ATTACK_UPPERCUT:
         if (hero.state & HERO_STATE_CHARGING)
         {
-            // check for jumping variant, add vertical boost to it
+
+            // if grounded, apply smaller vertical speed
             if (!(hero.state & HERO_STATE_GROUNDED))
             {
                 hero.speedY = HERO_UPPERCUT_JUMP_SPEED;
+            }
+            else
+            {
+                hero.speedY = HERO_UPPERCUT_SPEED;
             }
             hero.currentAttack = 1;
         }
@@ -260,7 +267,7 @@ void heroInputs(void) NONBANKED
     }
     else
     {
-        *currentJoypad = bossDbgStrategies[currentObject->strategyIndex][currentObject->buttonIndex];
+        *currentJoypad = currentObject->strategy[currentObject->strategyIndex][currentObject->buttonIndex];
     }
 
     // If not attacking
