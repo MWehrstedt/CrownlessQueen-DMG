@@ -72,4 +72,8 @@ extern targetTile_t targetTileVertical;
 /// @brief Scroll X offset
 extern uint8_t scrollX;
 
+/// @brief Player 1 attack hitbox
+extern uint8_t sideStepCounter;
+BANKREF_EXTERN(sideStepCounter)
+
 #endif // !__VARS_H__

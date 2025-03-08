@@ -78,8 +78,8 @@ void initBossDbg(void) NONBANKED
     enemy.strategyIndex = 0;
     hero.drawIndex = 0;
 
-    // enemy.strategy = dummyStrategy;
-    enemy.strategy = bossDbgStrategies;
+    enemy.strategy = dummyStrategy;
+    //enemy.strategy = bossDbgStrategies;
     enemy.drawFrames = bossDbgFrames;
 }
 BANKREF(initBossDbg)
@@ -221,7 +221,7 @@ void updateBossDbg(void) NONBANKED
     /*  ----------------
             CPU Input
         ----------------*/    
-    if (!currentObject->human && ++currentObject->buttonIndex == 40)
+    if (!currentObject->human && ++currentObject->buttonIndex == 5)
     {
         currentObject->buttonIndex = 0;
     }

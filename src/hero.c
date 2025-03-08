@@ -226,7 +226,7 @@ void updateHero(void) NONBANKED
     /*  ----------------
             CPU Input
         ----------------*/
-    if (!currentObject->human && ++currentObject->buttonIndex == 40)
+    if (!currentObject->human && ++currentObject->buttonIndex == 20)
     {
         currentObject->buttonIndex = 0;
     }
@@ -243,7 +243,16 @@ void updateHero(void) NONBANKED
 
 void updateHitbox(void) BANKED
 {
-    if (heroAttackHitbox.counter >= heroMoveFrames[hero.currentAttack].startup || heroAttackHitbox.counter <= heroMoveFrames[hero.currentAttack].recovery)
+    // Move hitbox away during startup and recovery
+    if (heroAttackHitbox.counter >= heroMoveFrames[currentObject->currentAttack].startup || heroAttackHitbox.counter <= heroMoveFrames[currentObject->currentAttack].recovery)
+    {
+        heroAttackHitbox.x = 200;
+        heroAttackHitbox.y = 200;
+        heroAttackHitbox.drawX = 200;
+        heroAttackHitbox.drawY = 200;
+    }
+    // Move hitbox away during dash
+    else if (currentObject->currentAttack == 3)
     {
         heroAttackHitbox.x = 200;
         heroAttackHitbox.y = 200;
@@ -252,19 +261,27 @@ void updateHitbox(void) BANKED
     }
     else
     {
-        if (hero.direction & HERO_DIRECTION_LEFT)
+        if (currentObject->direction & HERO_DIRECTION_LEFT)
         {
-            heroAttackHitbox.x = hero.x - 8;
-            heroAttackHitbox.drawX = hero.drawX - 8;
+            heroAttackHitbox.x = currentObject->x - 8;
+            heroAttackHitbox.drawX = currentObject->drawX - 8;
         }
         else
         {
-            heroAttackHitbox.x = hero.x + HITBOX_SIZE_X + 8;
-            heroAttackHitbox.drawX = hero.drawX + HITBOX_SIZE_X + 8;
+            heroAttackHitbox.x = currentObject->x + HITBOX_SIZE_X + 8;
+            heroAttackHitbox.drawX = currentObject->drawX + HITBOX_SIZE_X + 8;
         }
 
-        heroAttackHitbox.y = hero.y + 10;
-        heroAttackHitbox.drawY = hero.drawY + 10;
+        heroAttackHitbox.y = currentObject->y + 10;
+        heroAttackHitbox.drawY = currentObject->drawY + 10;
+    }
+
+    switch (currentObject->currentAttack)
+    {
+    case 2:
+    case 3:
+        currentObject->invulnerability = 2;
+        break;
     }
 }
 BANKREF(updateHitbox)
@@ -284,36 +301,72 @@ void drawHitbox(void) BANKED
 }
 BANKREF(drawHitbox)
 
-void setupMove(void) BANKED
+void setupMove(uint8_t id) BANKED
 {
-    switch (game.selectedSpecials)
+    currentObject->currentAttack = id;
+
+    switch (id)
     {
     case HERO_ATTACK_UPPERCUT:
-        if (hero.state & HERO_STATE_CHARGING)
+        if (!(currentObject->state & HERO_STATE_GROUNDED))
         {
-
-            // if grounded, apply smaller vertical speed
-            if (!(hero.state & HERO_STATE_GROUNDED))
-            {
-                hero.speedY = HERO_UPPERCUT_JUMP_SPEED;
-            }
-            else
-            {
-                hero.speedY = HERO_UPPERCUT_SPEED;
-            }
-            hero.currentAttack = 1;
+            currentObject->speedY = HERO_UPPERCUT_JUMP_SPEED;
         }
         else
         {
-            hero.currentAttack = 0;
+            currentObject->speedY = HERO_UPPERCUT_VERTICALSPEED;
         }
 
+        if (currentObject->direction & HERO_DIRECTION_LEFT)
+        {
+            currentObject->speedX = -HERO_UPPERCUT_HORIZONTALSPEED;
+        }
+        else
+        {
+            currentObject->speedX = HERO_UPPERCUT_HORIZONTALSPEED;
+        }
+
+        break;
+    case HERO_ATTACK_PUNCH_ONE:
+
+        break;
+
+    case HERO_ATTACK_SIDESTEP:
+        if (!(currentObject->state & HERO_STATE_GROUNDED))
+            break;
+
+        if (currentObject->direction & HERO_DIRECTION_LEFT)
+        {
+            currentObject->speedX = -HERO_SIDESTEP_SPEED;
+        }
+        else
+        {
+            currentObject->speedX = HERO_SIDESTEP_SPEED;
+        }
+
+        currentObject->invulnerability = 1;
+
+        break;
+    case HERO_ATTACK_DASH:
+        if (!(currentObject->state & HERO_STATE_GROUNDED))
+            break;
+
+        if (currentObject->direction & HERO_DIRECTION_LEFT)
+        {
+            currentObject->speedX = -HERO_DASH_SPEED;
+        }
+        else
+        {
+            currentObject->speedX = HERO_DASH_SPEED;
+        }
+
+        currentObject->invulnerability = 1;
         break;
     }
 
     // Set move metadata and activate hitbox
-    heroAttackHitbox.counter = heroMoveFrames[hero.currentAttack].length;
-    heroAttackHitbox.damage = heroMoveFrames[hero.currentAttack].damage;
+    heroAttackHitbox.counter = heroMoveFrames[currentObject->currentAttack].length;
+    heroAttackHitbox.damage = heroMoveFrames[currentObject->currentAttack].damage;
     heroAttackHitbox.attribute |= HITBOX_ACTIVE;
 }
 BANKREF(setupMove)
@@ -324,7 +377,7 @@ void updateWeapon(void) BANKED
 }
 BANKREF(updateWeapon)
 
-/// @brief Handles inputs on main menu screen
+/// @brief Handles inputs
 void heroInputs(void) NONBANKED
 {
     // Save previous inputs
@@ -361,7 +414,7 @@ void heroInputs(void) NONBANKED
             currentObject->state |= HERO_STATE_JUMPING;
         }
 
-        // Charging
+        // Charging uppercut
         if (*currentJoypad & J_UP)
         {
             currentObject->state |= HERO_STATE_CHARGING;
@@ -371,11 +424,47 @@ void heroInputs(void) NONBANKED
             currentObject->state &= ~HERO_STATE_CHARGING;
         }
 
-        // Attack
-        if ((*currentJoypad & J_B) && !(*currentPreviousJoypad & J_B))
+        // Charging dash
+        if (*currentJoypad & J_DOWN)
+        {
+            currentObject->state |= HERO_STATE_DOWNCHARGING;
+        }
+        else
+        {
+            currentObject->state &= ~HERO_STATE_DOWNCHARGING;
+        }
+
+        // Charging Side Step
+        if ((*currentJoypad & J_B))
+        {
+            if (++sideStepCounter > HERO_TIMER_SIDESTEP_MAX)
+                sideStepCounter = HERO_TIMER_SIDESTEP_MAX;
+        }
+
+        // Attack side step
+        if (!(*currentJoypad & J_B) && (*currentPreviousJoypad & J_B) && sideStepCounter == HERO_TIMER_SIDESTEP_MAX)
         {
             currentObject->state |= HERO_STATE_ATTACKING;
-            setupMove();
+            sideStepCounter = 0;
+            setupMove(HERO_ATTACK_SIDESTEP);
+        }
+        else if ((*currentJoypad & J_B) && !(*currentPreviousJoypad & J_B))
+        {
+            // Attack jab and uppercut
+            currentObject->state |= HERO_STATE_ATTACKING;
+
+            if (currentObject->state & HERO_STATE_CHARGING)
+            {
+                setupMove(HERO_ATTACK_UPPERCUT);
+            }
+            else if (currentObject->state & HERO_STATE_DOWNCHARGING)
+            {
+                setupMove(HERO_ATTACK_DASH);
+            }
+            else
+            {
+                setupMove(HERO_ATTACK_PUNCH_ONE);
+            }
         }
     }
 

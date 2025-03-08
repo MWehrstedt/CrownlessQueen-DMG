@@ -22,7 +22,7 @@ BANKREF_EXTERN(updateHero)
 void updateHitbox(void) BANKED;
 BANKREF_EXTERN(updateHitbox)
 
-void setupMove(void) BANKED;
+void setupMove(uint8_t id) BANKED;
 BANKREF_EXTERN(setupMove)
 
 /// @brief Main weapon routine

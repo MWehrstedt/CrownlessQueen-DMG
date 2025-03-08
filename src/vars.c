@@ -56,3 +56,6 @@ targetTile_t targetTileVertical;
 BANKREF(targetTileVertical)
 
 uint8_t scrollX;
+
+uint8_t sideStepCounter;
+BANKREF(sideStepCounter)
