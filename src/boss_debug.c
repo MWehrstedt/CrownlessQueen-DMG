@@ -2,6 +2,7 @@
 #include "animations.h"
 #include "boss_debug.h"
 #include "collision.h"
+#include "graphics.h"
 #include "moves.h"
 #include "strategies.h"
 #include "vars.h"
@@ -13,6 +14,9 @@ void updateBossDbgDrawFrames(void)
     if (currentObject->state & HERO_STATE_HURT)
     {
         currentObject->drawFrames = heroHurtFrames;
+
+        // update HUD
+        updateHealthBar();
     }
     else if (currentObject->state & HERO_STATE_JUMPING)
     {
@@ -31,7 +35,7 @@ void drawBossDbg(void) NONBANKED
     {
         for (iterator = 0; iterator < 9; ++iterator)
         {
-            set_sprite_tile(OAM_ENEMY_SPRITEID + iterator, currentObject->drawFrames[0][iterator] + currentObject->drawIndex);
+            set_sprite_tile(OAM_ENEMY_SPRITEID + iterator, currentObject->drawFrames[0][(currentObject->drawIndex * 9) + iterator]);
             // Set sprite attributes
             move_sprite(OAM_ENEMY_SPRITEID + iterator,
                         currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + currentObject->drawFrames[2][iterator],
@@ -42,21 +46,11 @@ void drawBossDbg(void) NONBANKED
     {
         for (iterator = 0; iterator < 9; ++iterator)
         {
-            set_sprite_tile(OAM_ENEMY_SPRITEID + iterator, currentObject->drawFrames[0][iterator] + currentObject->drawIndex);
+            set_sprite_tile(OAM_ENEMY_SPRITEID + iterator, currentObject->drawFrames[0][(currentObject->drawIndex * 9) + iterator]);
             // Set sprite attributes
             move_sprite(OAM_ENEMY_SPRITEID + iterator, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + currentObject->drawFrames[1][iterator], currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + currentObject->drawFrames[3][iterator]);
         }
     }
-
-    // move_sprite(20, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y);
-    // move_sprite(21, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + 8, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y);
-    // move_sprite(22, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + 16, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y);
-    // move_sprite(23, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + 8);
-    // move_sprite(24, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + 8, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + 8);
-    // move_sprite(25, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + 16, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + 8);
-    // move_sprite(26, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + 16);
-    // move_sprite(27, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + 8, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + 16);
-    // move_sprite(28, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + 16, currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + 16);
 }
 BANKREF(drawBossDbg)
 
@@ -68,7 +62,9 @@ void initBossDbg(void) NONBANKED
     enemy.handleInput = &heroInputs;
     enemy.update = &updateBossDbg;
 
-    enemy.x = 120;
+    enemy.health = 32;
+    enemy.maxHealth = 32;
+    enemy.x = 130;
     enemy.y = 48;
     enemy.speedX = 0;
     enemy.speedY = 0;
@@ -79,8 +75,12 @@ void initBossDbg(void) NONBANKED
     hero.drawIndex = 0;
 
     enemy.strategy = dummyStrategy;
-    //enemy.strategy = bossDbgStrategies;
+    // enemy.strategy = bossDbgStrategies;
     enemy.drawFrames = bossDbgFrames;
+
+    
+    // Init HUD
+    updateHealthBar();
 }
 BANKREF(initBossDbg)
 
@@ -135,7 +135,7 @@ void updateBossDbg(void) NONBANKED
 
     /*  ----------------
             Collision
-        ----------------*/    
+        ----------------*/
     checkCollisionBackgroundX();
     checkCollisionBackgroundY();
 
@@ -174,6 +174,7 @@ void updateBossDbg(void) NONBANKED
     {
         currentObject->state |= HERO_STATE_HURT;
         currentObject->stateCounter = HERO_TIMER_HURT;
+        currentObject->health--;
 
         if (currentObject->direction & HERO_DIRECTION_LEFT)
             currentObject->speedX = HERO_KNOCKBACK_HORIZONTAL;
@@ -218,9 +219,19 @@ void updateBossDbg(void) NONBANKED
         --currentObject->invulnerability;
     }
 
+    // Face player
+    if (currentObject->x + 8 < hero.x)
+    {
+        currentObject->direction = HERO_DIRECTION_RIGHT;
+    }
+    else
+    {
+        currentObject->direction = HERO_DIRECTION_LEFT;
+    }
+
     /*  ----------------
             CPU Input
-        ----------------*/    
+        ----------------*/
     if (!currentObject->human && ++currentObject->buttonIndex == 5)
     {
         currentObject->buttonIndex = 0;
@@ -228,7 +239,7 @@ void updateBossDbg(void) NONBANKED
 
     /*  ----------------
             State handling
-        ----------------*/    
+        ----------------*/
     if (*currentPreviousState != currentObject->state)
     {
         updateBossDbgDrawFrames();

@@ -2,6 +2,7 @@
 #define __TYPES_H__
 #include "../include/stdint.h"
 #include "../include/stdbool.h"
+#include <gbdk/platform.h>
 
 #define GAME_GRAVITY_MAX 5
 #define GAME_GRAVITY_STEP 1
@@ -14,7 +15,7 @@
 #define GAME_STATE_PAUSED 0b10000000
 
 #define HITBOX_ACTIVE 0b00000001
-#define HITBOX_MAPSIZE_X 16
+#define HITBOX_MAPSIZE_X 10
 #define HITBOX_MAPSIZE_Y 9
 #define HITBOX_OFFSET_LEFT 4
 #define HITBOX_OFFSET_TOP 2
@@ -23,6 +24,7 @@
 #define HITBOX_SIZE_X 16
 #define HITBOX_SIZE_Y 20
 #define HITBOX_TILESIZE 16
+
 
 #define HERO_ATTACK_PUNCH_TWO 0b00000010
 
@@ -55,23 +57,34 @@
 #define HERO_STATE_ATTACKING 0b00010000
 #define HERO_STATE_HURT 0b00001000
 #define HERO_STATE_DOWNCHARGING 0b00000100
+#define HERO_STATE_WALKING 0b00000010
 #define HERO_WALK_SPEED (2)
 
 #define OAM_HERO_SPRITEID (0)
 #define OAM_ENEMY_SPRITEID (20)
 
+#define WND_BLANK_TILE_ID (100)
+#define WND_NOHEALTH_TILE_ID (105)
+
 typedef struct
 {
 	bool human;
+	bool animationPlay;
 	uint8_t x;
 	uint8_t y;
 	int8_t speedX;
 	int8_t speedY;
+	uint8_t animationCounter;
+	uint8_t attackChargeCounter;
 	uint8_t buttonIndex;
 	uint8_t drawCounter;
 	uint8_t drawIndex;
+	uint8_t drawFrameLength;
+	uint8_t drawFrameRate;
 	uint8_t drawX;
 	uint8_t drawY;
+	uint8_t health;
+	uint8_t maxHealth;
 	uint8_t state;
 	uint8_t direction;
 	uint8_t currentAttack;

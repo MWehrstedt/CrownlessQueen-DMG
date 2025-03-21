@@ -6,18 +6,17 @@
 #include "boss_debug.h"
 #include "input.h"
 #include "vars.h"
-
-#if defined(NINTENDO)
+#if defined(GAMEBOY)
 #include "sgb.h"
-#include "../res/sgb_border.h"
 #endif
+#include "../res/sgb_border.h"
 
 void main(void)
 {
-#if defined(SEGA)
+#if defined(GAMEGEAR)
     __WRITE_VDP_REG(VDP_R2, R2_MAP_0x3800);
     __WRITE_VDP_REG(VDP_R5, R5_SAT_0x3F00);
-#else
+#elif defined(GAMEBOY)
 
     // Wait 4 frames
     // For SGB on PAL SNES this delay is required on startup, otherwise borders don't show up
@@ -25,17 +24,22 @@ void main(void)
         vsync();
 
     // The display must be ON before calling set_sgb_border()
-    DISPLAY_ON;
-    set_sgb_border(sgb_border_tiles,
-                   sizeof(sgb_border_tiles),
-                   sgb_border_map,
-                   sizeof(sgb_border_map),
-                   sgb_border_palettes, sizeof(sgb_border_palettes));
+
+    if (sgb_check())
+    {
+        DISPLAY_ON;
+        set_sgb_border(sgb_border_tiles,
+                       sizeof(sgb_border_tiles),
+                       sgb_border_map,
+                       sizeof(sgb_border_map),
+                       sgb_border_palettes, sizeof(sgb_border_palettes));
+    }
 #endif
 
     initGfxMainMenu();
-
+    currentObject = &hero;
     initHero();
+    currentObject = &enemy;
     initBossDbg();
     game.state = GAME_STATE_GAMEPLAY;
 
@@ -49,7 +53,7 @@ void main(void)
         case GAME_STATE_GAMEPLAY:
             // Game main loop processing goes here
             // Scroll background here to avoid screen tearing
-            move_bkg(scrollX, 0);
+            // move_bkg(scrollX, 0);
 
             // Handle player input
             currentObject = &hero;
@@ -65,7 +69,6 @@ void main(void)
             }
 
             currentObject->draw();
-
             drawHitbox();
 
             // Switch over to CPU handling

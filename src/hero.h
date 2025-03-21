@@ -10,7 +10,6 @@ BANKREF_EXTERN(initHero)
 void drawHitbox(void) BANKED;
 BANKREF_EXTERN(drawHitbox)
 
-
 /// @brief Draw and animate hero sprite
 void drawHero(void) NONBANKED;
 BANKREF_EXTERN(drawHero)

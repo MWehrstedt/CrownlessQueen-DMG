@@ -1,5 +1,6 @@
 #include <gbdk/platform.h>
 #include "animations.h"
+#include "graphics.h"
 #include "hero.h"
 #include "collision.h"
 #include "moves.h"
@@ -13,17 +14,52 @@
 
 void updateHeroDrawFrames(void)
 {
+
+    currentObject->animationCounter = 0;
+    currentObject->drawIndex = 0;
+
     if (currentObject->state & HERO_STATE_HURT)
     {
         currentObject->drawFrames = heroHurtFrames;
+
+        // update HUD
+        updateHealthBar();
+    }
+    else if (currentObject->state & HERO_STATE_ATTACKING)
+    {
+        currentObject->animationPlay = false;
+
+        if (currentObject->currentAttack == HERO_ATTACK_UPPERCUT)
+        {
+            currentObject->drawFrames = heroUppercutFrames;
+        }
+        else if (currentObject->state & HERO_STATE_JUMPING)
+        {
+            currentObject->drawFrames = heroJumpingAttackFrames;
+        }
+        else
+        {
+            currentObject->drawFrames = heroAttackFrames;
+        }
     }
     else if (currentObject->state & HERO_STATE_JUMPING)
     {
+        currentObject->animationPlay = false;
         currentObject->drawFrames = heroJumpingFrames;
+    }
+    else if (currentObject->state & HERO_STATE_WALKING)
+    {
+        currentObject->animationPlay = true;
+        currentObject->drawFrames = heroWalkingFrames;
+        currentObject->drawFrameLength = 4;
+        currentObject->drawFrameRate = 12;
     }
     else if (currentObject->state & HERO_STATE_GROUNDED)
     {
+        currentObject->animationPlay = true;
         currentObject->drawFrames = heroIdleFrames;
+        currentObject->drawFrameLength = 2;
+        currentObject->drawFrameRate = 16;
     }
 }
 
@@ -33,10 +69,13 @@ void drawHero(void) NONBANKED
     // NOTE: current offset table breaks GG, maybe fixes itself when implementing flipped sprites
     if (currentObject->direction == HERO_DIRECTION_RIGHT)
     {
-        for (iterator = 0; iterator < 9; ++iterator)
+        for (iterator = 0; iterator < 12; ++iterator)
         {
-            set_sprite_tile(OAM_HERO_SPRITEID + iterator, currentObject->drawFrames[0][iterator] + currentObject->drawIndex);
-            set_sprite_prop(OAM_HERO_SPRITEID + iterator, S_FLIPX);
+            set_sprite_tile(OAM_HERO_SPRITEID + iterator, currentObject->drawFrames[0][(currentObject->drawIndex * 12) + iterator]);
+            if (HARDWARE_SPRITE_CAN_FLIP_X)
+            {
+                set_sprite_prop(OAM_HERO_SPRITEID + iterator, 0);
+            }
             move_sprite(OAM_HERO_SPRITEID + iterator,
                         currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + currentObject->drawFrames[2][iterator],
                         currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + currentObject->drawFrames[3][iterator]);
@@ -44,17 +83,20 @@ void drawHero(void) NONBANKED
     }
     else
     {
-        for (iterator = 0; iterator < 9; ++iterator)
+        for (iterator = 0; iterator < 12; ++iterator)
         {
-            set_sprite_tile(OAM_HERO_SPRITEID + iterator, currentObject->drawFrames[0][iterator] + currentObject->drawIndex);
-            set_sprite_prop(OAM_HERO_SPRITEID + iterator, 0);
+            set_sprite_tile(OAM_HERO_SPRITEID + iterator, currentObject->drawFrames[0][(currentObject->drawIndex * 12) + iterator]);
+            if (HARDWARE_SPRITE_CAN_FLIP_X)
+            {
+                set_sprite_prop(OAM_HERO_SPRITEID + iterator, S_FLIPX);
+            }
             move_sprite(OAM_HERO_SPRITEID + iterator,
                         currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + currentObject->drawFrames[1][iterator],
                         currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + currentObject->drawFrames[3][iterator]);
         }
     }
 }
-// BANKREF(drawHero)
+BANKREF(drawHero)
 
 void initHero(void) NONBANKED
 {
@@ -67,9 +109,15 @@ void initHero(void) NONBANKED
     hero.speedX = 0;
     hero.speedY = 0;
     hero.state = 0;
-    hero.direction = 0;
+    hero.direction = HERO_DIRECTION_RIGHT;
     hero.drawIndex = 0;
+    hero.health = 20;
+    hero.maxHealth = 20;
+    hero.attackChargeCounter = 0;
 
+    hero.animationCounter = 0;
+    hero.drawFrameLength = 4;
+    hero.drawFrameRate = 10;
     hero.strategyIndex = 0;
     hero.strategy = dummyStrategy;
     hero.drawFrames = heroJumpingFrames;
@@ -77,6 +125,9 @@ void initHero(void) NONBANKED
 
     heroAttackHitbox.counter = 0;
     heroAttackHitbox.attribute = 0;
+
+    // Init HUD
+    updateHealthBar();
 }
 // BANKREF(initHero)
 
@@ -136,6 +187,7 @@ void updateHero(void) NONBANKED
     {
         currentObject->state |= HERO_STATE_HURT;
         currentObject->stateCounter = HERO_TIMER_HURT;
+        currentObject->health--;
 
         if (currentObject->direction & HERO_DIRECTION_LEFT)
             currentObject->speedX = HERO_KNOCKBACK_HORIZONTAL;
@@ -152,26 +204,27 @@ void updateHero(void) NONBANKED
     currentObject->x += currentObject->speedX;
     currentObject->y += currentObject->speedY;
 
-    // Update draw coordinates
-    if (currentObject->x < DEVICE_SCREEN_PX_WIDTH / 2)
-    {
-        currentObject->drawX = currentObject->x;
-        scrollX = 0;
-        // move_bkg(0, 0);
-    }
-    else if (currentObject->x > 255 - (DEVICE_SCREEN_PX_WIDTH / 2))
-    {
-        currentObject->drawX = currentObject->x - 95;
-        scrollX = 95;
-        // move_bkg(95, 0);
-    }
-    else
-    {
-        currentObject->drawX = (DEVICE_SCREEN_PX_WIDTH / 2);
-        scrollX = currentObject->x - 80;
-        // move_bkg(currentObject->x - 80, 0);
-    }
+    // // Update draw coordinates
+    // if (currentObject->x < DEVICE_SCREEN_PX_WIDTH / 2)
+    // {
+    //     currentObject->drawX = currentObject->x;
+    //     scrollX = 0;
+    //     // move_bkg(0, 0);
+    // }
+    // else if (currentObject->x > 255 - (DEVICE_SCREEN_PX_WIDTH / 2))
+    // {
+    //     currentObject->drawX = currentObject->x - 95;
+    //     scrollX = 95;
+    //     // move_bkg(95, 0);
+    // }
+    // else
+    // {
+    //     currentObject->drawX = (DEVICE_SCREEN_PX_WIDTH / 2);
+    //     scrollX = currentObject->x - 80;
+    //     // move_bkg(currentObject->x - 80, 0);
+    // }
 
+    currentObject->drawX = currentObject->x;
     currentObject->drawY = currentObject->y;
 
     // Apply friction for next frame
@@ -192,6 +245,12 @@ void updateHero(void) NONBANKED
     if (currentObject->speedY != 0)
     {
         currentObject->state &= ~HERO_STATE_GROUNDED;
+
+        // Clear uppercut flag
+        if (currentObject->state & HERO_STATE_ATTACKING && currentObject->currentAttack == HERO_ATTACK_UPPERCUT)
+        {
+            heroAttackHitbox.counter = 5;
+        }
     }
 
     /*  ----------------
@@ -220,8 +279,11 @@ void updateHero(void) NONBANKED
         --currentObject->invulnerability;
     }
 
-    // Update animation frame offset
-    // TODO: insert logic to check animation length and update frequency
+    if (currentObject->animationPlay && ++currentObject->animationCounter == currentObject->drawFrameRate)
+    {
+        currentObject->animationCounter = 0;
+        currentObject->drawIndex = (currentObject->drawIndex + 1) % currentObject->drawFrameLength;
+    }
 
     /*  ----------------
             CPU Input
@@ -246,34 +308,53 @@ void updateHitbox(void) BANKED
     // Move hitbox away during startup and recovery
     if (heroAttackHitbox.counter >= heroMoveFrames[currentObject->currentAttack].startup || heroAttackHitbox.counter <= heroMoveFrames[currentObject->currentAttack].recovery)
     {
-        heroAttackHitbox.x = 200;
-        heroAttackHitbox.y = 200;
-        heroAttackHitbox.drawX = 200;
-        heroAttackHitbox.drawY = 200;
+        if (currentObject->direction & HERO_DIRECTION_LEFT)
+        {
+            heroAttackHitbox.x = currentObject->x + 4;
+            heroAttackHitbox.drawX = currentObject->drawX + 4;
+        }
+        else
+        {
+            heroAttackHitbox.x = currentObject->x + 15;
+            heroAttackHitbox.drawX = currentObject->drawX + 15;
+        }
+
+        heroAttackHitbox.y = currentObject->y + 16;
+        heroAttackHitbox.drawY = currentObject->drawY + 16;
     }
     // Move hitbox away during dash
     else if (currentObject->currentAttack == 3)
     {
-        heroAttackHitbox.x = 200;
-        heroAttackHitbox.y = 200;
-        heroAttackHitbox.drawX = 200;
-        heroAttackHitbox.drawY = 200;
-    }
-    else
-    {
         if (currentObject->direction & HERO_DIRECTION_LEFT)
         {
-            heroAttackHitbox.x = currentObject->x - 8;
-            heroAttackHitbox.drawX = currentObject->drawX - 8;
+            heroAttackHitbox.x = currentObject->x - 4;
+            heroAttackHitbox.drawX = currentObject->drawX - 4;
         }
         else
         {
-            heroAttackHitbox.x = currentObject->x + HITBOX_SIZE_X + 8;
-            heroAttackHitbox.drawX = currentObject->drawX + HITBOX_SIZE_X + 8;
+            heroAttackHitbox.x = currentObject->x + 20;
+            heroAttackHitbox.drawX = currentObject->drawX + 20;
         }
 
-        heroAttackHitbox.y = currentObject->y + 10;
-        heroAttackHitbox.drawY = currentObject->drawY + 10;
+        heroAttackHitbox.y = currentObject->y + 15;
+        heroAttackHitbox.drawY = currentObject->drawY + 15;
+    }
+    else
+    // Active
+    {
+        if (currentObject->direction & HERO_DIRECTION_LEFT)
+        {
+            heroAttackHitbox.x = currentObject->x - 3;
+            heroAttackHitbox.drawX = currentObject->drawX - 3;
+        }
+        else
+        {
+            heroAttackHitbox.x = currentObject->x + 20;
+            heroAttackHitbox.drawX = currentObject->drawX + 20;
+        }
+
+        heroAttackHitbox.y = currentObject->y + 16;
+        heroAttackHitbox.drawY = currentObject->drawY + 16;
     }
 
     switch (currentObject->currentAttack)
@@ -288,15 +369,15 @@ BANKREF(updateHitbox)
 
 void drawHitbox(void) BANKED
 {
-    if (heroAttackHitbox.attribute & HITBOX_ACTIVE)
+    if (heroAttackHitbox.attribute & HITBOX_ACTIVE && currentObject->currentAttack != HERO_ATTACK_UPPERCUT)
     {
         move_sprite(12, heroAttackHitbox.drawX + DEVICE_SPRITE_PX_OFFSET_X, heroAttackHitbox.drawY + DEVICE_SPRITE_PX_OFFSET_Y - 8);
-        move_sprite(13, heroAttackHitbox.drawX + DEVICE_SPRITE_PX_OFFSET_X, heroAttackHitbox.drawY + DEVICE_SPRITE_PX_OFFSET_Y);
+        // move_sprite(13, heroAttackHitbox.drawX + DEVICE_SPRITE_PX_OFFSET_X, heroAttackHitbox.drawY + DEVICE_SPRITE_PX_OFFSET_Y);
     }
     else
     {
         move_sprite(12, 220, 220);
-        move_sprite(13, 220, 220);
+        // move_sprite(13, 220, 220);
     }
 }
 BANKREF(drawHitbox)
@@ -400,11 +481,17 @@ void heroInputs(void) NONBANKED
         {
             currentObject->speedX = -HERO_WALK_SPEED;
             currentObject->direction = HERO_DIRECTION_LEFT;
+            currentObject->state |= HERO_STATE_WALKING;
         }
         else if (*currentJoypad & J_RIGHT)
         {
             currentObject->speedX = HERO_WALK_SPEED;
             currentObject->direction = HERO_DIRECTION_RIGHT;
+            currentObject->state |= HERO_STATE_WALKING;
+        }
+        else
+        {
+            currentObject->state &= ~HERO_STATE_WALKING;
         }
 
         // Jump
@@ -412,6 +499,7 @@ void heroInputs(void) NONBANKED
         {
             currentObject->speedY = HERO_JUMP_SPEED;
             currentObject->state |= HERO_STATE_JUMPING;
+            currentObject->state &= ~HERO_STATE_WALKING;
         }
 
         // Charging uppercut
@@ -434,18 +522,11 @@ void heroInputs(void) NONBANKED
             currentObject->state &= ~HERO_STATE_DOWNCHARGING;
         }
 
-        // Charging Side Step
-        if ((*currentJoypad & J_B))
-        {
-            if (++sideStepCounter > HERO_TIMER_SIDESTEP_MAX)
-                sideStepCounter = HERO_TIMER_SIDESTEP_MAX;
-        }
-
         // Attack side step
-        if (!(*currentJoypad & J_B) && (*currentPreviousJoypad & J_B) && sideStepCounter == HERO_TIMER_SIDESTEP_MAX)
+        if (!(*currentJoypad & J_B) && (*currentPreviousJoypad & J_B) && currentObject->attackChargeCounter == HERO_TIMER_SIDESTEP_MAX)
         {
             currentObject->state |= HERO_STATE_ATTACKING;
-            sideStepCounter = 0;
+            currentObject->attackChargeCounter = 0;
             setupMove(HERO_ATTACK_SIDESTEP);
         }
         else if ((*currentJoypad & J_B) && !(*currentPreviousJoypad & J_B))
@@ -465,6 +546,28 @@ void heroInputs(void) NONBANKED
             {
                 setupMove(HERO_ATTACK_PUNCH_ONE);
             }
+        }
+
+        // Charging Side Step
+        if ((*currentJoypad & J_B))
+        {
+            if (++currentObject->attackChargeCounter > HERO_TIMER_SIDESTEP_MAX)
+            {
+                currentObject->attackChargeCounter = HERO_TIMER_SIDESTEP_MAX;
+                if (currentObject->human)
+                    move_sprite(30, 24, 16);
+            }
+            else
+            {
+                if (currentObject->human)
+                    move_sprite(30, 16, 16);
+            }
+        }
+        else
+        {
+            currentObject->attackChargeCounter = 0;
+            if (currentObject->human)
+                move_sprite(30, 10, 16);
         }
     }
 

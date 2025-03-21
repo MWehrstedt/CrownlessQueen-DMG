@@ -3,7 +3,10 @@
 #ifndef __GRAPHICS_H__
 #define __GRAPHICS_H__
 
-/// @brief Load main menu graphics
+
 void initGfxMainMenu(void) BANKED;
 BANKREF_EXTERN(initGfxMainMenu)
+
+void updateHealthBar(void) BANKED;
+BANKREF_EXTERN(updateHealthBar)
 #endif

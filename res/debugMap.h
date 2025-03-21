@@ -7,8 +7,8 @@
  Info:
    Section       : 
    Bank          : 255
-   Map size      : 32 x 16
-   Tile set      : dungeon_32x32.gbr
+   Map size      : 32 x 18
+   Tile set      : debugTiles.gbr
    Plane count   : 1 plane (8 bits)
    Plane order   : Planes are continues
    Tile offset   : 0
@@ -21,7 +21,7 @@
 #define __debugMap_h_INCLUDE
 
 #define debugMapWidth 32
-#define debugMapHeight 16
+#define debugMapHeight 18
 #define debugMapBank 255
 
 #define debugMap debugMapPLN0

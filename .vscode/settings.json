@@ -4,7 +4,9 @@
         "dungeon_tiles.h": "c",
         "platform.h": "c",
         "hero.h": "c",
-        "sgb.h": "c"
+        "sgb.h": "c",
+        "stdint.h": "c",
+        "animations.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

@@ -1,29 +1,48 @@
 #include <gbdk/platform.h>
 #include <gbdk/gbdecompress.h>
-#include "../res/debugTiles.h"
-#include "../res/debugMap.h"
+#include <stdlib.h>
+#include "../res/levelHero_tiles.h"
+#include "../res/levelHero_map.h"
+#include "../res/windowMap.h"
+#include "../res/heroTiles.h"
+#include "../res/windowTiles.h"
+
 #include "animations.h"
 #include "graphics.h"
 #include "vars.h"
 
 #pragma bank 255
 
-uint8_t buffer[4096];
-
 BANKREF(initGfxMainMenu)
 void initGfxMainMenu(void) BANKED
 {
-    // Load decompressed tiles into bkg
-    set_bkg_data(0, gb_decompress(debugTiles, buffer) >> 4, buffer);
+    uint8_t buffer[4096];
 
     // Load decompressed tiles into bkg
-    set_sprite_data(0, gb_decompress(debugTiles, buffer) >> 4, buffer);
+    set_bkg_data(0, gb_decompress(levelHero_tiles, buffer) >> 4, buffer);
 
-    // Set map
-    set_bkg_tiles(0, 0, 32u, 16u, debugMap);
-    
+    // Load decompressed tiles into window
+#if defined(GAMEBOY)
+    set_win_data(100, gb_decompress(windowTiles, buffer) >> 4, buffer);
+#endif
+
+    // Load decompressed tiles into spr
+    set_sprite_data(1, gb_decompress(heroTiles, buffer) >> 4, buffer);
+    set_sprite_data(70, gb_decompress(heroTiles, buffer) >> 4, buffer);
+
+    // Set bkg map
+    set_bkg_tiles(0, 0, 20u, 14u, levelHero_map);
+
+#if defined(GAMEBOY)
+    // Set wnd map
+    set_win_tiles(0, 0, 20u, 8u, windowMap);
+
+    // Set wnd position
+    move_win(7, 112);
+#endif
+
     // Set hero and enemy tiles
-    for (iterator = 0; iterator < 9; ++iterator)
+    for (iterator = 0; iterator < 12; ++iterator)
     {
         set_sprite_tile(OAM_HERO_SPRITEID + iterator, heroIdleFrames[0][iterator]);
     }
@@ -32,38 +51,60 @@ void initGfxMainMenu(void) BANKED
     {
         set_sprite_tile(OAM_ENEMY_SPRITEID + iterator, bossDbgFrames[0][iterator]);
     }
-    
 
-    // set_sprite_tile(0, 1);
-    // set_sprite_tile(1, 1);
-    // set_sprite_tile(2, 1);
-    // set_sprite_tile(3, 1);
-    // set_sprite_tile(4, 1);
-    // set_sprite_tile(5, 1);
-    // set_sprite_tile(6, 1);
-    // set_sprite_tile(7, 1);
-    // set_sprite_tile(8, 1);
-    // set_sprite_tile(9, 1);
-    // set_sprite_tile(10, 1);
-    // set_sprite_tile(11, 1);
-
-    // set_sprite_tile(20, 2);
-    // set_sprite_tile(21, 2);
-    // set_sprite_tile(22, 2);
-    // set_sprite_tile(23, 2);
-    // set_sprite_tile(24, 2);
-    // set_sprite_tile(25, 2);
-    // set_sprite_tile(26, 2);
-    // set_sprite_tile(27, 2);
-    // set_sprite_tile(28, 2);
+    free(buffer);
 
     // DEBUG: assign hitbox sprites
-    set_sprite_tile(12, 2);
-    set_sprite_tile(13, 2);
+    set_sprite_tile(12, 64);
+    set_sprite_tile(30, 64);
 
     // Turn the on visible layers to make it visible
     SHOW_BKG;
     SHOW_SPRITES;
-    // SHOW_WIN
+#if defined(GAMEBOY)
+    SHOW_WIN;
+#endif
     DISPLAY_ON;
+}
+
+BANKREF_EXTERN(updateHealthBar)
+void updateHealthBar(void) BANKED
+{
+
+    if (currentObject->maxHealth == 20)
+    {
+        for (iterator = 0; iterator < 5; ++iterator)
+        {
+            if (currentObject->health > 3 + (iterator * 4))
+            {
+                set_win_tile_xy(1 + iterator, 2, WND_BLANK_TILE_ID + 4);
+            }
+            else if (currentObject->health <= iterator * 4)
+            {
+                set_win_tile_xy(1 + iterator, 2, WND_BLANK_TILE_ID);
+            }
+            else
+            {
+                set_win_tile_xy(1 + iterator, 2, WND_BLANK_TILE_ID + currentObject->health % 4);
+            }
+        }
+    }
+    else
+    {
+        for (iterator = 0; iterator < 8; ++iterator)
+        {
+            if (currentObject->health > 3 + (iterator * 4))
+            {
+                set_win_tile_xy(11 + iterator, 2, WND_BLANK_TILE_ID + 4);
+            }
+            else if (currentObject->health <= iterator * 4)
+            {
+                set_win_tile_xy(11 + iterator, 2, WND_BLANK_TILE_ID);
+            }
+            else
+            {
+                set_win_tile_xy(11 + iterator, 2, WND_BLANK_TILE_ID + currentObject->health % 4);
+            }
+        }
+    }
 }

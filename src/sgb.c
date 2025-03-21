@@ -1,9 +1,10 @@
 #include "sgb.h"
 #include <gbdk/platform.h>
-#include <gb/gb.h>
 #include <stdint.h>
-#include <gb/sgb.h>
 #include <string.h>
+#include <gb/gb.h>
+#include <gb/sgb.h>
+
 
 #define SGB_CHR_BLOCK0 0
 #define SGB_CHR_BLOCK1 1
