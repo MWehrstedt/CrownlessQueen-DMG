@@ -13,45 +13,28 @@ void updateBossDbgDrawFrames(void)
 {
     if (currentObject->state & HERO_STATE_HURT)
     {
-        currentObject->drawFrames = heroHurtFrames;
-
         // update HUD
         updateHealthBar();
-    }
-    else if (currentObject->state & HERO_STATE_JUMPING)
-    {
-        currentObject->drawFrames = heroJumpingFrames;
-    }
-    else if (currentObject->state & HERO_STATE_GROUNDED)
-    {
-        currentObject->drawFrames = bossDbgFrames;
     }
 }
 
 /// @brief Draw and animate boss sprite
 void drawBossDbg(void) NONBANKED
 {
-    if (currentObject->direction == HERO_DIRECTION_RIGHT)
+    for (iterator = 0; iterator < 9; ++iterator)
     {
-        for (iterator = 0; iterator < 9; ++iterator)
-        {
-            set_sprite_tile(OAM_ENEMY_SPRITEID + iterator, currentObject->drawFrames[0][(currentObject->drawIndex * 9) + iterator]);
-            // Set sprite attributes
-            move_sprite(OAM_ENEMY_SPRITEID + iterator,
-                        currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + currentObject->drawFrames[2][iterator],
-                        currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + currentObject->drawFrames[3][iterator]);
-        }
-    }
-    else
-    {
-        for (iterator = 0; iterator < 9; ++iterator)
-        {
-            set_sprite_tile(OAM_ENEMY_SPRITEID + iterator, currentObject->drawFrames[0][(currentObject->drawIndex * 9) + iterator]);
-            // Set sprite attributes
-            move_sprite(OAM_ENEMY_SPRITEID + iterator, currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + currentObject->drawFrames[1][iterator], currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + currentObject->drawFrames[3][iterator]);
-        }
+        set_sprite_tile(OAM_ENEMY_SPRITEID + iterator, currentObject->drawFrames[0][(currentObject->drawIndex * 9) + iterator]);
+
+        temp = currentObject->drawFrames[2][iterator];
+        temp = currentObject->drawFrames[3][iterator];
+
+        // Set sprite attributes
+        move_sprite(OAM_ENEMY_SPRITEID + iterator,
+                    currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + currentObject->drawFrames[2][iterator],
+                    currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + currentObject->drawFrames[3][iterator]);
     }
 }
+
 BANKREF(drawBossDbg)
 
 /// @brief Initialize boss
@@ -64,7 +47,7 @@ void initBossDbg(void) NONBANKED
 
     enemy.health = 32;
     enemy.maxHealth = 32;
-    enemy.x = 130;
+    enemy.x = 115;
     enemy.y = 48;
     enemy.speedX = 0;
     enemy.speedY = 0;
@@ -78,7 +61,6 @@ void initBossDbg(void) NONBANKED
     // enemy.strategy = bossDbgStrategies;
     enemy.drawFrames = bossDbgFrames;
 
-    
     // Init HUD
     updateHealthBar();
 }
@@ -169,12 +151,12 @@ void updateBossDbg(void) NONBANKED
         }
     }
 
-    // Check collision with player hitbox
+    // Check collision with player attack hitbox
     if ((heroAttackHitbox.attribute & HITBOX_ACTIVE) && !(currentObject->state & HERO_STATE_HURT) && currentObject->invulnerability == 0 && checkCollisionHitbox())
     {
         currentObject->state |= HERO_STATE_HURT;
         currentObject->stateCounter = HERO_TIMER_HURT;
-        currentObject->health--;
+        currentObject->health -= heroAttackHitbox.damage;
 
         if (currentObject->direction & HERO_DIRECTION_LEFT)
             currentObject->speedX = HERO_KNOCKBACK_HORIZONTAL;
@@ -190,7 +172,7 @@ void updateBossDbg(void) NONBANKED
     currentObject->x += currentObject->speedX;
     currentObject->y += currentObject->speedY;
 
-    currentObject->drawX = currentObject->x - scrollX;
+    currentObject->drawX = currentObject->x;// - scrollX;
     currentObject->drawY = currentObject->y;
 
     if (currentObject->state & HERO_STATE_GROUNDED && currentObject->speedX > 0)

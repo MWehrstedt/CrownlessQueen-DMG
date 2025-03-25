@@ -4,7 +4,12 @@
 #include "../res/levelHero_tiles.h"
 #include "../res/levelHero_map.h"
 #include "../res/windowMap.h"
+#if defined(GAMEBOY)
 #include "../res/heroTiles.h"
+#elif defined(GAMEGEAR)
+#include "../res/heroTiles-gg.h"
+#endif
+#include "../res/bossDbgTiles.h"
 #include "../res/windowTiles.h"
 
 #include "animations.h"
@@ -21,38 +26,48 @@ void initGfxMainMenu(void) BANKED
     // Load decompressed tiles into bkg
     set_bkg_data(0, gb_decompress(levelHero_tiles, buffer) >> 4, buffer);
 
-    // Load decompressed tiles into window
-#if defined(GAMEBOY)
-    set_win_data(100, gb_decompress(windowTiles, buffer) >> 4, buffer);
-#endif
-
-    // Load decompressed tiles into spr
-    set_sprite_data(1, gb_decompress(heroTiles, buffer) >> 4, buffer);
-    set_sprite_data(70, gb_decompress(heroTiles, buffer) >> 4, buffer);
-
     // Set bkg map
     set_bkg_tiles(0, 0, 20u, 14u, levelHero_map);
 
 #if defined(GAMEBOY)
+    /*
+        Load tile data in DMG format
+    */
+
+    // Load decompressed tiles into window
+    set_win_data(100, gb_decompress(windowTiles, buffer) >> 4, buffer);
+
     // Set wnd map
     set_win_tiles(0, 0, 20u, 8u, windowMap);
 
     // Set wnd position
     move_win(7, 112);
+
+    // Load decompressed tiles into spr
+    set_sprite_data(1, gb_decompress(heroTiles, buffer) >> 4, buffer);
+    set_sprite_data(70, gb_decompress(bossDbgTiles, buffer) >> 4, buffer);
+
+#elif defined(GAMEGEAR)
+    /*
+        Load tile data in GG format
+    */
+
+    set_palette(1, 1, heroTiles_gg_palettes);
+    set_sprite_4bpp_data(1, heroTiles_gg_TILE_COUNT, heroTiles_gg_tiles);
 #endif
+
+    free(buffer);
 
     // Set hero and enemy tiles
     for (iterator = 0; iterator < 12; ++iterator)
     {
-        set_sprite_tile(OAM_HERO_SPRITEID + iterator, heroIdleFrames[0][iterator]);
+        set_sprite_tile(OAM_HERO_SPRITEID + iterator, 0);
     }
 
     for (iterator = 0; iterator < 9; ++iterator)
     {
-        set_sprite_tile(OAM_ENEMY_SPRITEID + iterator, bossDbgFrames[0][iterator]);
+        set_sprite_tile(OAM_ENEMY_SPRITEID + iterator, 0);
     }
-
-    free(buffer);
 
     // DEBUG: assign hitbox sprites
     set_sprite_tile(12, 64);

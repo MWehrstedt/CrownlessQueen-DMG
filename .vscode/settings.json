@@ -6,7 +6,8 @@
         "hero.h": "c",
         "sgb.h": "c",
         "stdint.h": "c",
-        "animations.h": "c"
+        "animations.h": "c",
+        "herotiles.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

@@ -1,5 +1,5 @@
 #include <gbdk/platform.h>
-#include "animations.h"
+#include "heroAnimations.h"
 #include "graphics.h"
 #include "hero.h"
 #include "collision.h"
@@ -66,7 +66,6 @@ void updateHeroDrawFrames(void)
 /// @brief Draw and animate hero sprite
 void drawHero(void) NONBANKED
 {
-    // NOTE: current offset table breaks GG, maybe fixes itself when implementing flipped sprites
     if (currentObject->direction == HERO_DIRECTION_RIGHT)
     {
         for (iterator = 0; iterator < 12; ++iterator)
@@ -76,6 +75,11 @@ void drawHero(void) NONBANKED
             {
                 set_sprite_prop(OAM_HERO_SPRITEID + iterator, 0);
             }
+#if defined(GAMEGEAR)
+            // Load values into a temporary variable, presumably to correct endianness
+            temp = currentObject->drawFrames[2][iterator];
+            temp = currentObject->drawFrames[3][iterator];
+#endif
             move_sprite(OAM_HERO_SPRITEID + iterator,
                         currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + currentObject->drawFrames[2][iterator],
                         currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + currentObject->drawFrames[3][iterator]);
@@ -90,6 +94,13 @@ void drawHero(void) NONBANKED
             {
                 set_sprite_prop(OAM_HERO_SPRITEID + iterator, S_FLIPX);
             }
+
+#if defined(GAMEGEAR)
+            // Load values into a temporary variable, presumably to correct endianness
+            temp = currentObject->drawFrames[1][iterator];
+            temp = currentObject->drawFrames[3][iterator];
+#endif
+
             move_sprite(OAM_HERO_SPRITEID + iterator,
                         currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + currentObject->drawFrames[1][iterator],
                         currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + currentObject->drawFrames[3][iterator]);
@@ -308,35 +319,41 @@ void updateHitbox(void) BANKED
     // Move hitbox away during startup and recovery
     if (heroAttackHitbox.counter >= heroMoveFrames[currentObject->currentAttack].startup || heroAttackHitbox.counter <= heroMoveFrames[currentObject->currentAttack].recovery)
     {
+        heroAttackHitbox.x = 200;
+        heroAttackHitbox.y = 200;
+
         if (currentObject->direction & HERO_DIRECTION_LEFT)
         {
-            heroAttackHitbox.x = currentObject->x + 4;
+            // heroAttackHitbox.x = currentObject->x + 4;
             heroAttackHitbox.drawX = currentObject->drawX + 4;
         }
         else
         {
-            heroAttackHitbox.x = currentObject->x + 15;
+            // heroAttackHitbox.x = currentObject->x + 15;
             heroAttackHitbox.drawX = currentObject->drawX + 15;
         }
 
-        heroAttackHitbox.y = currentObject->y + 16;
+        // heroAttackHitbox.y = currentObject->y + 16;
         heroAttackHitbox.drawY = currentObject->drawY + 16;
     }
     // Move hitbox away during dash
     else if (currentObject->currentAttack == 3)
     {
+        heroAttackHitbox.x = 200;
+        heroAttackHitbox.y = 200;
+
         if (currentObject->direction & HERO_DIRECTION_LEFT)
         {
-            heroAttackHitbox.x = currentObject->x - 4;
+            // heroAttackHitbox.x = currentObject->x - 4;
             heroAttackHitbox.drawX = currentObject->drawX - 4;
         }
         else
         {
-            heroAttackHitbox.x = currentObject->x + 20;
+            // heroAttackHitbox.x = currentObject->x + 20;
             heroAttackHitbox.drawX = currentObject->drawX + 20;
         }
 
-        heroAttackHitbox.y = currentObject->y + 15;
+        // heroAttackHitbox.y = currentObject->y + 15;
         heroAttackHitbox.drawY = currentObject->drawY + 15;
     }
     else
@@ -555,19 +572,19 @@ void heroInputs(void) NONBANKED
             {
                 currentObject->attackChargeCounter = HERO_TIMER_SIDESTEP_MAX;
                 if (currentObject->human)
-                    move_sprite(30, 24, 16);
+                    move_sprite(30, 24 + DEVICE_SPRITE_PX_OFFSET_X, 16 + DEVICE_SPRITE_PX_OFFSET_Y);
             }
             else
             {
                 if (currentObject->human)
-                    move_sprite(30, 16, 16);
+                    move_sprite(30, 16 + DEVICE_SPRITE_PX_OFFSET_X, 16 + DEVICE_SPRITE_PX_OFFSET_Y);
             }
         }
         else
         {
             currentObject->attackChargeCounter = 0;
             if (currentObject->human)
-                move_sprite(30, 10, 16);
+                move_sprite(30, 10 + DEVICE_SPRITE_PX_OFFSET_X, 16 + DEVICE_SPRITE_PX_OFFSET_Y);
         }
     }
 

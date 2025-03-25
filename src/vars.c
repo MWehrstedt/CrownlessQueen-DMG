@@ -4,6 +4,9 @@
 
 #pragma bank 0
 
+int8_t temp;
+BANKREF(temp)
+
 uint8_t iterator;
 BANKREF(iterator)
 
@@ -54,8 +57,6 @@ BANKREF(targetTileHorizontal)
 
 targetTile_t targetTileVertical;
 BANKREF(targetTileVertical)
-
-uint8_t scrollX;
 
 uint8_t sideStepCounter;
 BANKREF(sideStepCounter)

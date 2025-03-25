@@ -4,7 +4,7 @@
 #include "vars.h"
 #include "hero.h"
 #include "collision.h"
-#include "../include/hitmapsPool.h"
+#include "hitmapsPool.h"
 
 #pragma bank 255
 
@@ -66,17 +66,17 @@ bool checkCollisionObject(void) BANKED
     // if (enemy.state & HERO_STATE_HURT)
     //     return false;
 
-    return hero.x + HITBOX_OFFSET_LEFT < enemy.x + HITBOX_OFFSET_LEFT + HITBOX_SIZE_X &&
-           hero.x + HITBOX_SIZE_X - HITBOX_OFFSET_RIGHT > enemy.x + HITBOX_OFFSET_LEFT &&
-           hero.y + HITBOX_OFFSET_TOP < enemy.y + HITBOX_SIZE_Y - HITBOX_OFFSET_BOTTOM &&
-           hero.y + HITBOX_SIZE_Y - HITBOX_OFFSET_BOTTOM > enemy.y + HITBOX_OFFSET_TOP;
+    return hero.x + HITBOX_OFFSET_LEFT < enemy.x + ENEMY_BOSSDBG_HITBOX_OFFSET_LEFT + ENEMY_BOSSDBG_HITBOX_SIZE_X &&
+           hero.x + HITBOX_SIZE_X + HITBOX_OFFSET_LEFT > enemy.x + ENEMY_BOSSDBG_HITBOX_OFFSET_LEFT &&
+           hero.y + HITBOX_OFFSET_TOP < enemy.y + ENEMY_BOSSDBG_HITBOX_SIZE_Y + ENEMY_BOSSDBG_HITBOX_OFFSET_TOP &&
+           hero.y + HITBOX_SIZE_Y + HITBOX_OFFSET_TOP > enemy.y + ENEMY_BOSSDBG_HITBOX_OFFSET_TOP;
 }
 
 BANKREF(checkCollisionHitbox)
 bool checkCollisionHitbox(void) BANKED
 {
-    return heroAttackHitbox.x + HITBOX_OFFSET_LEFT < enemy.x + HITBOX_OFFSET_LEFT + HITBOX_SIZE_X &&
-           heroAttackHitbox.x + HITBOX_SIZE_X - HITBOX_OFFSET_RIGHT > enemy.x + HITBOX_OFFSET_LEFT &&
-           heroAttackHitbox.y + HITBOX_OFFSET_TOP < enemy.y + HITBOX_SIZE_Y - HITBOX_OFFSET_BOTTOM &&
-           heroAttackHitbox.y + HITBOX_SIZE_Y - HITBOX_OFFSET_BOTTOM > enemy.y + HITBOX_OFFSET_TOP;
+    return heroAttackHitbox.x + heroAttackHitbox.offsetX < enemy.x + ENEMY_BOSSDBG_HITBOX_OFFSET_LEFT + ENEMY_BOSSDBG_HITBOX_SIZE_X &&
+           heroAttackHitbox.x + heroAttackHitbox.width > enemy.x + ENEMY_BOSSDBG_HITBOX_OFFSET_LEFT &&
+           heroAttackHitbox.y + heroAttackHitbox.offsetY < enemy.y + ENEMY_BOSSDBG_HITBOX_SIZE_Y - ENEMY_BOSSDBG_HITBOX_OFFSET_BOTTOM &&
+           heroAttackHitbox.y + heroAttackHitbox.height > enemy.y + ENEMY_BOSSDBG_HITBOX_OFFSET_TOP;
 }

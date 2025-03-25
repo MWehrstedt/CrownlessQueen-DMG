@@ -4,6 +4,16 @@
 #include "../include/stdbool.h"
 #include <gbdk/platform.h>
 
+/*  ======================
+            DEFINES
+    ====================== */
+#define ENEMY_BOSSDBG_HITBOX_OFFSET_LEFT (-1)
+#define ENEMY_BOSSDBG_HITBOX_OFFSET_TOP 1
+#define ENEMY_BOSSDBG_HITBOX_OFFSET_RIGHT 5
+#define ENEMY_BOSSDBG_HITBOX_OFFSET_BOTTOM 0
+#define ENEMY_BOSSDBG_HITBOX_SIZE_X 15
+#define ENEMY_BOSSDBG_HITBOX_SIZE_Y 23
+
 #define GAME_GRAVITY_MAX 5
 #define GAME_GRAVITY_STEP 1
 #define GAME_FRICTION 1
@@ -17,13 +27,21 @@
 #define HITBOX_ACTIVE 0b00000001
 #define HITBOX_MAPSIZE_X 10
 #define HITBOX_MAPSIZE_Y 9
-#define HITBOX_OFFSET_LEFT 4
-#define HITBOX_OFFSET_TOP 2
-#define HITBOX_OFFSET_RIGHT 2
-#define HITBOX_OFFSET_BOTTOM 0
-#define HITBOX_SIZE_X 16
-#define HITBOX_SIZE_Y 20
 #define HITBOX_TILESIZE 16
+
+#define HITBOX_OFFSET_LEFT 5
+#define HITBOX_OFFSET_TOP 1
+#define HITBOX_OFFSET_RIGHT 0
+#define HITBOX_OFFSET_BOTTOM 0
+#define HITBOX_SIZE_X 14
+#define HITBOX_SIZE_Y 23
+
+#define HERO_JAB_HITBOX_OFFSET_LEFT 5
+#define HERO_JAB_HITBOX_OFFSET_TOP 1
+#define HERO_JAB_HITBOX_OFFSET_RIGHT 0
+#define HERO_JAB_HITBOX_OFFSET_BOTTOM 0
+#define HERO_JAB_HITBOX_SIZE_X 10
+#define HERO_JAB_HITBOX_SIZE_Y 10
 
 
 #define HERO_ATTACK_PUNCH_TWO 0b00000010
@@ -66,6 +84,9 @@
 #define WND_BLANK_TILE_ID (100)
 #define WND_NOHEALTH_TILE_ID (105)
 
+/*  ======================
+            TYPEDEFS
+    ====================== */
 typedef struct
 {
 	bool human;
@@ -117,6 +138,10 @@ typedef struct
 {
 	uint8_t x;
 	uint8_t y;
+	uint8_t offsetX;
+	uint8_t offsetY;
+	uint8_t width;
+	uint8_t height;
 	uint8_t drawX;
 	uint8_t drawY;
 	uint8_t attribute;

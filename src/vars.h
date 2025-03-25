@@ -3,6 +3,10 @@
 #include <gbdk/platform.h>
 #include "types.h"
 
+/// @brief Temporary variable, used for one-off operations
+extern int8_t temp;
+BANKREF_EXTERN(temp)
+
 /// @brief Global level 1 iterator
 extern uint8_t iterator;
 BANKREF_EXTERN(iterator)
