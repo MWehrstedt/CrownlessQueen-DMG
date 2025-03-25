@@ -1,8 +1,8 @@
 # ProjectOwls
 Think Mega Man bosses, but with a boxer. Made for DMG and Game Gear. It aims to run on original hardware and uses MBC5 (for DMG).
 
-> [!WARNING]
-> The Game Gear build is broken right now. I will focus on it when I add proper sprites.
+> [!NOTE]
+> Game Gear Assets look wonky, they are currently being worked on.
 
 # Controls
 
@@ -17,6 +17,8 @@ Think Mega Man bosses, but with a boxer. Made for DMG and Game Gear. It aims to 
 
 # Compiling
 Adjust paths to GDBK and your favourite emulator if necessary and run the makefile or `compile.bat`. You can use `compile.bat -nostart` To just compile the game.
+
+Currently, the GG build fails when it tries to compile the Super Game Boy functionality in `sgb.c`. To fix it for now, just move the C file to a different folder.
 
 
 ## Parameters
