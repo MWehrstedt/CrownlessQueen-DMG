@@ -1,8 +1,6 @@
 # ProjectOwls
 Think Mega Man bosses, but with a boxer. Made for DMG and Game Gear. It aims to run on original hardware and uses MBC5 (for DMG).
 
-> [!NOTE]
-> Game Gear Assets look wonky, they are currently being worked on.
 
 # Controls
 
