@@ -52,6 +52,15 @@ BANKREF(previousState2)
 uint8_t *currentPreviousState;
 BANKREF(currentPreviousState)
 
+uint8_t previousDirection1;
+BANKREF(previousDirection1)
+
+uint8_t previousDirection2;
+BANKREF(previousDirection2)
+
+// uint8_t *currentPreviousDirection;
+// BANKREF(currentPreviousDirection)
+
 targetTile_t targetTileHorizontal;
 BANKREF(targetTileHorizontal)
 

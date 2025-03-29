@@ -172,7 +172,7 @@ void updateBossDbg(void) NONBANKED
     currentObject->x += currentObject->speedX;
     currentObject->y += currentObject->speedY;
 
-    currentObject->drawX = currentObject->x;// - scrollX;
+    currentObject->drawX = currentObject->x; // - scrollX;
     currentObject->drawY = currentObject->y;
 
     if (currentObject->state & HERO_STATE_GROUNDED && currentObject->speedX > 0)
@@ -226,5 +226,12 @@ void updateBossDbg(void) NONBANKED
     {
         updateBossDbgDrawFrames();
     }
+// #if defined(GAMEGEAR)
+//     // On Game Gear, load flipped sprite set due to no sprite flipping
+//     if (previousDirection2 != currentObject->direction)
+//     {
+//         loadPlayer2Sprites();
+//     }
+// #endif
 }
 BANKREF(updateBossDbg)

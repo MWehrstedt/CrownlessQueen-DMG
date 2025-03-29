@@ -8,8 +8,8 @@
 #include "vars.h"
 #if defined(GAMEBOY)
 #include "sgb.h"
-#endif
 #include "../res/sgb_border.h"
+#endif
 
 void main(void)
 {
@@ -60,9 +60,11 @@ void main(void)
             currentJoypad = &joypadCurrent;
             currentPreviousJoypad = &joypadPrevious;
             currentPreviousState = &previousState1;
+            previousDirection1 = hero.direction;
 
             currentObject->handleInput();
             currentObject->update();
+
             if (heroAttackHitbox.attribute & HITBOX_ACTIVE)
             {
                 updateHitbox();
@@ -71,15 +73,34 @@ void main(void)
             currentObject->draw();
             drawHitbox();
 
+#if defined(GAMEGEAR)
+            // On Game Gear, load flipped sprite set due to no sprite flipping
+            if (previousDirection1 != currentObject->direction)
+            {
+                wait_vbl_done();
+                loadPlayer1Sprites();
+            }
+#endif
+
             // Switch over to CPU handling
             currentObject = &enemy;
             currentJoypad = &joypadCurrent2;
             currentPreviousJoypad = &joypadPrevious2;
             currentPreviousState = &previousState2;
+            previousDirection2 = enemy.direction;
 
             currentObject->handleInput();
             currentObject->update();
             currentObject->draw();
+
+#if defined(GAMEGEAR)
+            // On Game Gear, load flipped sprite set due to no sprite flipping
+            if (previousDirection2 != currentObject->direction)
+            {
+                wait_vbl_done();
+                loadPlayer2Sprites();
+            }
+#endif
 
             break;
 

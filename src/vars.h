@@ -67,6 +67,15 @@ BANKREF_EXTERN(previousState2)
 extern uint8_t *currentPreviousState;
 BANKREF_EXTERN(currentPreviousState)
 
+extern uint8_t previousDirection1;
+BANKREF_EXTERN(previousDirection1)
+
+extern uint8_t previousDirection2;
+BANKREF_EXTERN(previousDirection2)
+
+// extern uint8_t *currentPreviousDirection;
+// BANKREF_EXTERN(currentPreviousDirection)
+
 /// @brief Collision tile horizontal
 extern targetTile_t targetTileHorizontal;
 

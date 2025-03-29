@@ -20,6 +20,7 @@ void updateHeroDrawFrames(void)
 
     if (currentObject->state & HERO_STATE_HURT)
     {
+        currentObject->animationPlay = false;
         currentObject->drawFrames = heroHurtFrames;
 
         // update HUD
@@ -80,6 +81,7 @@ void drawHero(void) NONBANKED
             temp = currentObject->drawFrames[2][iterator];
             temp = currentObject->drawFrames[3][iterator];
 #endif
+
             move_sprite(OAM_HERO_SPRITEID + iterator,
                         currentObject->drawX + DEVICE_SPRITE_PX_OFFSET_X + currentObject->drawFrames[2][iterator],
                         currentObject->drawY + DEVICE_SPRITE_PX_OFFSET_Y + currentObject->drawFrames[3][iterator]);
@@ -307,10 +309,20 @@ void updateHero(void) NONBANKED
     /*  ----------------
             State handling
         ----------------*/
+
     if (*currentPreviousState != currentObject->state)
     {
         updateHeroDrawFrames();
     }
+// #if defined(GAMEGEAR)
+//     // On Game Gear, load flipped sprite set due to no sprite flipping
+//     if (previousDirection1 != currentObject->direction)
+//     {
+        
+//         loadPlayer1Sprites();
+//         wait_vbl_done();
+//     }
+// #endif
 }
 // BANKREF(updateHero)
 
@@ -393,8 +405,8 @@ void drawHitbox(void) BANKED
     }
     else
     {
-        move_sprite(12, 220, 220);
-        // move_sprite(13, 220, 220);
+        move_sprite(12, 320, 220);
+        // move_sprite(13, 320, 220);
     }
 }
 BANKREF(drawHitbox)
