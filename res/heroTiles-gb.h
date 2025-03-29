@@ -29,25 +29,25 @@
 #define heroTiles_tilesBank 0
 
 /* Super Gameboy palette 0 */
-#define heroTiles_tilesSGBPal0c0 0
-#define heroTiles_tilesSGBPal0c1 0
-#define heroTiles_tilesSGBPal0c2 0
+#define heroTiles_tilesSGBPal0c0 21304
+#define heroTiles_tilesSGBPal0c1 32767
+#define heroTiles_tilesSGBPal0c2 2399
 #define heroTiles_tilesSGBPal0c3 0
 
 /* Super Gameboy palette 1 */
-#define heroTiles_tilesSGBPal1c0 6076
+#define heroTiles_tilesSGBPal1c0 21304
 #define heroTiles_tilesSGBPal1c1 8935
 #define heroTiles_tilesSGBPal1c2 6596
 #define heroTiles_tilesSGBPal1c3 5344
 
 /* Super Gameboy palette 2 */
-#define heroTiles_tilesSGBPal2c0 6076
+#define heroTiles_tilesSGBPal2c0 21304
 #define heroTiles_tilesSGBPal2c1 8935
 #define heroTiles_tilesSGBPal2c2 6596
 #define heroTiles_tilesSGBPal2c3 5344
 
 /* Super Gameboy palette 3 */
-#define heroTiles_tilesSGBPal3c0 6076
+#define heroTiles_tilesSGBPal3c0 21304
 #define heroTiles_tilesSGBPal3c1 8935
 #define heroTiles_tilesSGBPal3c2 6596
 #define heroTiles_tilesSGBPal3c3 5344

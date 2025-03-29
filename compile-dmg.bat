@@ -7,8 +7,8 @@ REM     compile.bat [-nostart]
 mkdir -p obj
 
 SET COMP_STRING=
-SET GAME_TITLE="OWLS "
-SET GAME_RESULT=powl.gb
+SET GAME_TITLE="SHEERCOLD  "
+SET GAME_RESULT=sheercold.gb
 
 SET PATH_BGB=..\..\Tools\bgb\bgb.exe
 

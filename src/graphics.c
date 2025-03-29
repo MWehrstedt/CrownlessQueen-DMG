@@ -1,10 +1,10 @@
 #include <gbdk/platform.h>
 #include <gbdk/gbdecompress.h>
 #include <stdlib.h>
-#include "../res/levelHero_map.h"
 #include "../res/windowMap.h"
 #if defined(GAMEBOY)
-#include "../res/levelHero_tiles.h"
+#include "../res/levelHero_map-gb.h"
+#include "../res/levelHero_tiles-gb.h"
 #include "../res/heroTiles-gb.h"
 #elif defined(GAMEGEAR)
 #include "../res/levelHero_tiles-gg.h"

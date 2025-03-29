@@ -8,8 +8,8 @@ REM     compile.bat [-nobuild]
 mkdir -p obj
 
 SET COMP_STRING=
-SET GAME_TITLE="OWLS "
-SET GAME_RESULT_SG=powl.gg
+SET GAME_TITLE="SHEERCOLD  "
+SET GAME_RESULT_SG=sheercold.gg
 
 SET PATH_GEARSYSTEM=..\..\..\GameGear\Tools\Gearsystem\Gearsystem.exe
 
