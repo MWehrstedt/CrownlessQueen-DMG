@@ -8,7 +8,9 @@
         "stdint.h": "c",
         "animations.h": "c",
         "herotiles.h": "c",
-        "metasprites.h": "c"
+        "metasprites.h": "c",
+        "vars.h": "c",
+        "windowmap.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

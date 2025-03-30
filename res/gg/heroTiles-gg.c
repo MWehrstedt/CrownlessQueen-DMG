@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <gbdk/platform.h>
 #include <gbdk/metasprites.h>
-
+#pragma bank 2
 BANKREF(heroTiles_gg)
 
 const palette_color_t heroTiles_gg_palettes[16] = {

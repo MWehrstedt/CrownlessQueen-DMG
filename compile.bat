@@ -8,9 +8,9 @@ REM     compile.bat [-nobuild]
 mkdir -p obj
 
 SET COMP_STRING=
-SET GAME_TITLE="OWLS "
-SET GAME_RESULT=powl.gb
-SET GAME_RESULT_SG=powl.gg
+SET GAME_TITLE="SHEERCOLD  "
+SET GAME_RESULT=sheercold.gb
+SET GAME_RESULT_SG=sheercold.gg
 
 SET PATH_BGB=..\..\Tools\bgb\bgb.exe
 SET PATH_GEARSYSTEM=..\..\..\GameGear\Tools\Gearsystem\Gearsystem.exe
@@ -35,6 +35,12 @@ for /f %%f in ('dir res\*.c /b') do (
     SET COMP_STRING=!COMP_STRING! obj\%%~nf.o
 )
 
+for /f %%f in ('dir res\gb\*.c /b') do (
+    bin\lcc -c -o obj\gb\%%~nf.o res\gb\%%~nf.c -debug
+    ECHO res\gb\%%f
+    SET COMP_STRING=!COMP_STRING! obj\gb\%%~nf.o
+)
+
 REM source files
 ECHO -- Compiling source files --
 for /f %%f in ('dir src\*.c /b') do (
@@ -43,6 +49,13 @@ for /f %%f in ('dir src\*.c /b') do (
     SET COMP_STRING=!COMP_STRING! obj\%%~nf.o
 )
 
+for /f %%f in ('dir src\gb\*.c /b') do (
+    bin\lcc -c -o obj\gb\%%~nf.o src\gb\%%~nf.c -debug
+    ECHO src\gb\%%f
+    SET COMP_STRING=!COMP_STRING! obj\gb\%%~nf.o
+)
+
+
 ECHO obj\%GAME_RESULT%
 
 bin\lcc -o obj\%GAME_RESULT% %COMP_STRING% -Wm-yn%GAME_TITLE% -Wl-yt0x19 -Wl-j -Wm-yoA -Wm-ys -autobank -Wb-ext=.rel -Wb-v -debug
@@ -50,6 +63,8 @@ rem bin\lcc -o obj\%GAME_RESULT% %COMP_STRING% res/hUGEDriver.lib -Wm-yn%GAME_TI
 
 ECHO %COMP_STRING%
 ECHO === End Compile %GAME_RESULT% ===
+
+SET COMP_STRING=
 
 ECHO --
 ECHO === Start Compile %GAME_RESULT_SG% ===
@@ -68,6 +83,12 @@ for /f %%f in ('dir res\*.c /b') do (
     SET COMP_STRING=!COMP_STRING! obj\%%~nf.o
 )
 
+for /f %%f in ('dir res\gg\*.c /b') do (
+    bin\lcc -c -o obj\gg\%%~nf.o res\gg\%%~nf.c -mz80:gg -debug
+    ECHO res\gg\%%f
+    SET COMP_STRING=!COMP_STRING! obj\gg\%%~nf.o
+)
+
 REM source files
 ECHO -- Compiling source files --
 for /f %%f in ('dir src\*.c /b') do (
@@ -75,6 +96,7 @@ for /f %%f in ('dir src\*.c /b') do (
     ECHO res\%%f
     SET COMP_STRING=!COMP_STRING! obj\%%~nf.o
 )
+
 
 ECHO obj\%GAME_RESULT_SG%
 

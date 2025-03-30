@@ -3,13 +3,13 @@
 #include <stdlib.h>
 #include "../res/windowMap.h"
 #if defined(GAMEBOY)
-#include "../res/levelHero_map-gb.h"
-#include "../res/levelHero_tiles-gb.h"
-#include "../res/heroTiles-gb.h"
+#include "../res/gb/levelHero_map-gb.h"
+#include "../res/gb/levelHero_tiles-gb.h"
+#include "../res/gb/heroTiles-gb.h"
 #elif defined(GAMEGEAR)
-#include "../res/levelHero_tiles-gg.h"
-#include "../res/heroTiles-gg.h"
-#include "../res/heroTiles-gg-left.h"
+#include "../res/gg/levelHero_tiles-gg.h"
+#include "../res/gg/heroTiles-gg.h"
+#include "../res/gg/heroTiles-gg-left.h"
 #endif
 #include "../res/bossDbgTiles.h"
 #include "../res/windowTiles.h"
@@ -18,7 +18,7 @@
 #include "graphics.h"
 #include "vars.h"
 
-#pragma bank 255
+#pragma bank 2
 
 BANKREF(initGfxMainMenu)
 void initGfxMainMenu(void) BANKED

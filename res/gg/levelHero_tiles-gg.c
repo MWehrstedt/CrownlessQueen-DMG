@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <gbdk/platform.h>
 #include <gbdk/metasprites.h>
-
+#pragma bank 2
 BANKREF(levelHero_tiles_gg)
 
 const palette_color_t levelHero_tiles_gg_palettes[16] = {

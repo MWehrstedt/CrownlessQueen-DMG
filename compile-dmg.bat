@@ -32,13 +32,26 @@ for /f %%f in ('dir res\*.c /b') do (
     SET COMP_STRING=!COMP_STRING! obj\%%~nf.o
 )
 
+for /f %%f in ('dir res\gb\*.c /b') do (
+    bin\lcc -c -o obj\gb\%%~nf.o res\gb\%%~nf.c -debug
+    ECHO res\gb\%%f
+    SET COMP_STRING=!COMP_STRING! obj\gb\%%~nf.o
+)
+
 REM source files
 ECHO -- Compiling source files --
 for /f %%f in ('dir src\*.c /b') do (
     bin\lcc -c -o obj\%%~nf.o src\%%~nf.c -debug
-    ECHO res\%%f
+    ECHO src\%%f
     SET COMP_STRING=!COMP_STRING! obj\%%~nf.o
 )
+
+for /f %%f in ('dir src\gb\*.c /b') do (
+    bin\lcc -c -o obj\gb\%%~nf.o src\gb\%%~nf.c -debug
+    ECHO src\gb\%%f
+    SET COMP_STRING=!COMP_STRING! obj\gb\%%~nf.o
+)
+
 
 ECHO obj\%GAME_RESULT%
 

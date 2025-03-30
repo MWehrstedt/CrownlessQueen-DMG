@@ -1,7 +1,6 @@
 # Sheer Cold
 Think Mega Man bosses, but with a boxer. Made for DMG and Game Gear. It aims to run on original hardware and uses MBC5 (for DMG).
 
-
 # Controls
 
 | Button Game Boy | Button Game Gear | Action |
@@ -16,9 +15,6 @@ Think Mega Man bosses, but with a boxer. Made for DMG and Game Gear. It aims to 
 # Compiling
 Adjust paths to GDBK and your favourite emulator if necessary and run the makefile or `compile.bat`. You can use `compile.bat -nostart` To just compile the game.
 
-Currently, the GG build fails when it tries to compile the Super Game Boy functionality in `sgb.c`. To fix it for now, just move the C file to a different folder.
-
-
 ## Parameters
 ```
 compile.bat [-nostart]
@@ -27,8 +23,12 @@ compile.bat [-nostartgb] [-nostartgg]
 -nostart : Don't start any emulator, combines -nostartgb and -nostartgg
 -nostartgb: Don't start DMG emulator
 -nostartgg: Don't start GG emulator
-
 ```
+
+
+> [!WARNING]
+> Makefiles do not work now. I might fix them, eventually. Maybe.
+
 
 ## Frameworks
 Made with [GBDK 2020 version 4.3.0](https://github.com/gbdk-2020/gbdk-2020)

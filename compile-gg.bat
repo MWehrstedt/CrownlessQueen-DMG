@@ -33,6 +33,12 @@ for /f %%f in ('dir res\*.c /b') do (
     SET COMP_STRING=!COMP_STRING! obj\%%~nf.o
 )
 
+for /f %%f in ('dir res\gg\*.c /b') do (
+    bin\lcc -c -o obj\gg\%%~nf.o res\gg\%%~nf.c -mz80:gg -debug
+    ECHO res\gg\%%f
+    SET COMP_STRING=!COMP_STRING! obj\gg\%%~nf.o
+)
+
 REM source files
 ECHO -- Compiling source files --
 for /f %%f in ('dir src\*.c /b') do (

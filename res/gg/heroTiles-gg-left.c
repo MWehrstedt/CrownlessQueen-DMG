@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <gbdk/platform.h>
 #include <gbdk/metasprites.h>
+#pragma bank 2
 
 BANKREF(heroTiles_gg_left)
 

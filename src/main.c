@@ -7,8 +7,8 @@
 #include "input.h"
 #include "vars.h"
 #if defined(GAMEBOY)
-#include "sgb.h"
-#include "../res/sgb_border.h"
+#include "../src/gb/sgb.h"
+#include "../res/gb/sgb_border.h"
 #endif
 
 void main(void)
