@@ -9,9 +9,9 @@
 #define heroTiles_gg_TILE_ORIGIN 0
 #define heroTiles_gg_TILE_W 8
 #define heroTiles_gg_TILE_H 8
-#define heroTiles_gg_WIDTH 512
+#define heroTiles_gg_WIDTH 536
 #define heroTiles_gg_HEIGHT 8
-#define heroTiles_gg_TILE_COUNT 63
+#define heroTiles_gg_TILE_COUNT 67
 #define heroTiles_gg_PALETTE_COUNT 1
 #define heroTiles_gg_COLORS_PER_PALETTE 16
 #define heroTiles_gg_TOTAL_COLORS 16
@@ -19,6 +19,6 @@
 BANKREF_EXTERN(heroTiles_gg)
 
 extern const palette_color_t heroTiles_gg_palettes[16];
-extern const uint8_t heroTiles_gg_tiles[2016];
+extern const uint8_t heroTiles_gg_tiles[2144];
 
 #endif

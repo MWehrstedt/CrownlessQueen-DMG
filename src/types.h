@@ -5,8 +5,8 @@
 #include <gbdk/platform.h>
 
 /*  ======================
-            DEFINES
-    ====================== */
+			DEFINES
+	====================== */
 #define ENEMY_BOSSDBG_HITBOX_OFFSET_LEFT (-1)
 #define ENEMY_BOSSDBG_HITBOX_OFFSET_TOP 1
 #define ENEMY_BOSSDBG_HITBOX_OFFSET_RIGHT 5
@@ -36,22 +36,14 @@
 #define HITBOX_SIZE_X 14
 #define HITBOX_SIZE_Y 23
 
-#define HERO_JAB_HITBOX_OFFSET_LEFT 5
-#define HERO_JAB_HITBOX_OFFSET_TOP 1
-#define HERO_JAB_HITBOX_OFFSET_RIGHT 0
-#define HERO_JAB_HITBOX_OFFSET_BOTTOM 0
-#define HERO_JAB_HITBOX_SIZE_X 10
-#define HERO_JAB_HITBOX_SIZE_Y 10
-
-
 #define HERO_ATTACK_PUNCH_TWO 0b00000010
 
 #define HERO_CURRENT_ATTACK_NONE (255)
 #define HERO_ATTACK_PUNCH_ONE (0b00000000)
-#define HERO_ATTACK_UPPERCUT  (0b00000001)
-#define HERO_ATTACK_SIDESTEP  (0b00000010)
-#define HERO_ATTACK_DASH	  (0b00000011)
-#define HERO_ATTACK_DEMON 	  (0b00100000)
+#define HERO_ATTACK_UPPERCUT (0b00000001)
+#define HERO_ATTACK_SIDESTEP (0b00000010)
+#define HERO_ATTACK_DASH (0b00000011)
+#define HERO_ATTACK_DEMON (0b00100000)
 
 #define HERO_TIMER_HURT (50)
 #define HERO_TIMER_INVULNERABILITY (60)
@@ -84,9 +76,16 @@
 #define WND_BLANK_TILE_ID (100)
 #define WND_NOHEALTH_TILE_ID (105)
 
+// Platform specific defines
+#if defined(GAMEBOY)
+#define WND_HEALTH_OFFET_Y (0)
+#else
+#define WND_HEALTH_OFFET_Y (15)
+#endif
+
 /*  ======================
-            TYPEDEFS
-    ====================== */
+			TYPEDEFS
+	====================== */
 typedef struct
 {
 	bool human;
@@ -157,6 +156,5 @@ typedef struct
 	uint8_t recovery;
 	uint8_t length;
 } move_t;
-
 
 #endif // !__TYPES_H__

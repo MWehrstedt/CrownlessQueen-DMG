@@ -10,7 +10,8 @@
         "herotiles.h": "c",
         "metasprites.h": "c",
         "vars.h": "c",
-        "windowmap.h": "c"
+        "windowmap.h": "c",
+        "graphics.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

@@ -63,8 +63,6 @@ void checkCollisionBackgroundY(void) BANKED
 BANKREF(checkCollisionObject)
 bool checkCollisionObject(void) BANKED
 {
-    // if (enemy.state & HERO_STATE_HURT)
-    //     return false;
 
     return hero.x + HITBOX_OFFSET_LEFT < enemy.x + ENEMY_BOSSDBG_HITBOX_OFFSET_LEFT + ENEMY_BOSSDBG_HITBOX_SIZE_X &&
            hero.x + HITBOX_SIZE_X + HITBOX_OFFSET_LEFT > enemy.x + ENEMY_BOSSDBG_HITBOX_OFFSET_LEFT &&
@@ -75,8 +73,8 @@ bool checkCollisionObject(void) BANKED
 BANKREF(checkCollisionHitbox)
 bool checkCollisionHitbox(void) BANKED
 {
-    return heroAttackHitbox.x + heroAttackHitbox.offsetX < enemy.x + ENEMY_BOSSDBG_HITBOX_OFFSET_LEFT + ENEMY_BOSSDBG_HITBOX_SIZE_X &&
+    return heroAttackHitbox.x < enemy.x + ENEMY_BOSSDBG_HITBOX_OFFSET_LEFT + ENEMY_BOSSDBG_HITBOX_SIZE_X &&
            heroAttackHitbox.x + heroAttackHitbox.width > enemy.x + ENEMY_BOSSDBG_HITBOX_OFFSET_LEFT &&
-           heroAttackHitbox.y + heroAttackHitbox.offsetY < enemy.y + ENEMY_BOSSDBG_HITBOX_SIZE_Y - ENEMY_BOSSDBG_HITBOX_OFFSET_BOTTOM &&
+           heroAttackHitbox.y < enemy.y + ENEMY_BOSSDBG_HITBOX_SIZE_Y - ENEMY_BOSSDBG_HITBOX_OFFSET_BOTTOM &&
            heroAttackHitbox.y + heroAttackHitbox.height > enemy.y + ENEMY_BOSSDBG_HITBOX_OFFSET_TOP;
 }

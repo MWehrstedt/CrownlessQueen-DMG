@@ -1,19 +1,21 @@
 #include <gbdk/platform.h>
 #include <gbdk/gbdecompress.h>
 #include <stdlib.h>
-#include "../res/windowMap.h"
 #if defined(GAMEBOY)
 #include "../res/gb/levelHero_map-gb.h"
 #include "../res/gb/levelHero_tiles-gb.h"
 #include "../res/gb/heroTiles-gb.h"
+#include "../res/gb/bossDbgTiles.h"
+#include "../res/gb/windowTiles.h"
 #elif defined(GAMEGEAR)
 #include "../res/gg/levelHero_tiles-gg.h"
 #include "../res/gg/heroTiles-gg.h"
 #include "../res/gg/heroTiles-gg-left.h"
-#endif
-#include "../res/bossDbgTiles.h"
-#include "../res/windowTiles.h"
+#include "../res/gg/bossDbg-Tiles-gg.h"
+#include "../res/gg/win-tiles-gg.h"
 
+#endif
+#include "../res/windowMap.h"
 #include "animations.h"
 #include "graphics.h"
 #include "vars.h"
@@ -56,14 +58,20 @@ void initGfxMainMenu(void) BANKED
         Load tile data in GG format
     */
 
+    // Set bkg tiles
     set_palette(0, 1, levelHero_tiles_gg_palettes);
     set_native_tile_data(0, levelHero_tiles_gg_TILE_COUNT, levelHero_tiles_gg_tiles);
 
+    // Set wnd tiles
+    set_native_tile_data(100, win_tiles_gg_TILE_COUNT, win_tiles_gg_tiles);
+
     set_palette(1, 1, heroTiles_gg_palettes);
     set_sprite_4bpp_data(1, heroTiles_gg_TILE_COUNT, heroTiles_gg_tiles);
+    set_sprite_4bpp_data(70, bossDbg_Tiles_gg_TILE_COUNT, bossDbg_Tiles_gg_tiles);
 
     set_bkg_tiles(0, 0, 20u, 14u, levelHero_tiles_gg_map);
-    
+    set_bkg_tiles(0, 14, 20u, 4u, windowMap);
+
 #endif
 
     // Set hero and enemy tiles
@@ -78,8 +86,10 @@ void initGfxMainMenu(void) BANKED
     }
 
     // DEBUG: assign hitbox sprites
-    set_sprite_tile(12, 63);
-    set_sprite_tile(30, 63);
+    set_sprite_tile(12, 64);
+    set_sprite_tile(30, 65);
+
+    move_sprite(30, 48 + DEVICE_SPRITE_PX_OFFSET_X, 120 + DEVICE_SPRITE_PX_OFFSET_Y);
 
     // Turn the on visible layers to make it visible
     SHOW_BKG;
@@ -100,15 +110,27 @@ void updateHealthBar(void) BANKED
         {
             if (currentObject->health > 3 + (iterator * 4))
             {
+#if defined(GAMEBOY)
                 set_win_tile_xy(1 + iterator, 2, WND_BLANK_TILE_ID + 4);
+#else
+                set_bkg_tile_xy(1 + iterator, 16, WND_BLANK_TILE_ID + 4);
+#endif
             }
             else if (currentObject->health <= iterator * 4)
             {
+#if defined(GAMEBOY)
                 set_win_tile_xy(1 + iterator, 2, WND_BLANK_TILE_ID);
+#else
+                set_bkg_tile_xy(1 + iterator, 16, WND_BLANK_TILE_ID);
+#endif
             }
             else
             {
+#if defined(GAMEBOY)
                 set_win_tile_xy(1 + iterator, 2, WND_BLANK_TILE_ID + currentObject->health % 4);
+#else
+                set_bkg_tile_xy(1 + iterator, 16, WND_BLANK_TILE_ID + currentObject->health % 4);
+#endif
             }
         }
     }
@@ -118,15 +140,27 @@ void updateHealthBar(void) BANKED
         {
             if (currentObject->health > 3 + (iterator * 4))
             {
+#if defined(GAMEBOY)
                 set_win_tile_xy(11 + iterator, 2, WND_BLANK_TILE_ID + 4);
+#else
+                set_bkg_tile_xy(11 + iterator, 16, WND_BLANK_TILE_ID + 4);
+#endif
             }
             else if (currentObject->health <= iterator * 4)
             {
+#if defined(GAMEBOY)
                 set_win_tile_xy(11 + iterator, 2, WND_BLANK_TILE_ID);
+#else
+                set_bkg_tile_xy(11 + iterator, 16, WND_BLANK_TILE_ID);
+#endif
             }
             else
             {
+#if defined(GAMEBOY)
                 set_win_tile_xy(11 + iterator, 2, WND_BLANK_TILE_ID + currentObject->health % 4);
+#else
+                set_bkg_tile_xy(11 + iterator, 16, WND_BLANK_TILE_ID + currentObject->health % 4);
+#endif
             }
         }
     }

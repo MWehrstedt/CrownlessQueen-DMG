@@ -8,7 +8,7 @@
             "type": "emulicious-debugger",
             "request": "launch",
             "name": "Debug DMG",
-            "program": "${workspaceFolder}/obj/powl.gb",
+            "program": "${workspaceFolder}/obj/sheercold.gb",
             "port": 58870,
             "stopOnEntry": true
         },
@@ -16,7 +16,7 @@
             "type": "emulicious-debugger",
             "request": "launch",
             "name": "Debug GG",
-            "program": "${workspaceFolder}/obj/powl.gg",
+            "program": "${workspaceFolder}/obj/sheercold.gg",
             "port": 58870,
             "stopOnEntry": true
         }

@@ -258,13 +258,14 @@ void updateHero(void) NONBANKED
     if (currentObject->speedY != 0)
     {
         currentObject->state &= ~HERO_STATE_GROUNDED;
-
-        // Clear uppercut flag
-        if (currentObject->state & HERO_STATE_ATTACKING && currentObject->currentAttack == HERO_ATTACK_UPPERCUT)
-        {
-            heroAttackHitbox.counter = 5;
-        }
     }
+
+    // // Clear uppercut flag
+    // if (currentObject->speedY == 0 && currentObject->state & HERO_STATE_ATTACKING && currentObject->currentAttack == HERO_ATTACK_UPPERCUT
+    // && heroAttackHitbox.counter < 25)
+    // {
+    //     heroAttackHitbox.counter = 5;
+    // }
 
     /*  ----------------
             Counters
@@ -314,38 +315,27 @@ void updateHero(void) NONBANKED
     {
         updateHeroDrawFrames();
     }
-// #if defined(GAMEGEAR)
-//     // On Game Gear, load flipped sprite set due to no sprite flipping
-//     if (previousDirection1 != currentObject->direction)
-//     {
-        
-//         loadPlayer1Sprites();
-//         wait_vbl_done();
-//     }
-// #endif
 }
 // BANKREF(updateHero)
 
 void updateHitbox(void) BANKED
 {
     // Move hitbox away during startup and recovery
-    if (heroAttackHitbox.counter >= heroMoveFrames[currentObject->currentAttack].startup || heroAttackHitbox.counter <= heroMoveFrames[currentObject->currentAttack].recovery)
+    if (heroAttackHitbox.counter >= heroMoveFrames[currentObject->currentAttack].startup ||
+        heroAttackHitbox.counter <= heroMoveFrames[currentObject->currentAttack].recovery)
     {
         heroAttackHitbox.x = 200;
         heroAttackHitbox.y = 200;
 
         if (currentObject->direction & HERO_DIRECTION_LEFT)
         {
-            // heroAttackHitbox.x = currentObject->x + 4;
             heroAttackHitbox.drawX = currentObject->drawX + 4;
         }
         else
         {
-            // heroAttackHitbox.x = currentObject->x + 15;
             heroAttackHitbox.drawX = currentObject->drawX + 15;
         }
 
-        // heroAttackHitbox.y = currentObject->y + 16;
         heroAttackHitbox.drawY = currentObject->drawY + 16;
     }
     // Move hitbox away during dash
@@ -356,16 +346,13 @@ void updateHitbox(void) BANKED
 
         if (currentObject->direction & HERO_DIRECTION_LEFT)
         {
-            // heroAttackHitbox.x = currentObject->x - 4;
             heroAttackHitbox.drawX = currentObject->drawX - 4;
         }
         else
         {
-            // heroAttackHitbox.x = currentObject->x + 20;
             heroAttackHitbox.drawX = currentObject->drawX + 20;
         }
 
-        // heroAttackHitbox.y = currentObject->y + 15;
         heroAttackHitbox.drawY = currentObject->drawY + 15;
     }
     else
@@ -373,21 +360,49 @@ void updateHitbox(void) BANKED
     {
         if (currentObject->direction & HERO_DIRECTION_LEFT)
         {
-            heroAttackHitbox.x = currentObject->x - 3;
-            heroAttackHitbox.drawX = currentObject->drawX - 3;
+            heroAttackHitbox.x = currentObject->x + heroMoveHitboxOffsetXLeft[currentObject->currentAttack];
+            heroAttackHitbox.drawX = currentObject->drawX + heroMoveHitboxOffsetXLeft[currentObject->currentAttack];
         }
         else
         {
-            heroAttackHitbox.x = currentObject->x + 20;
-            heroAttackHitbox.drawX = currentObject->drawX + 20;
+            heroAttackHitbox.x = currentObject->x + heroMoveHitboxOffsetXRight[currentObject->currentAttack];
+            heroAttackHitbox.drawX = currentObject->drawX + heroMoveHitboxOffsetXRight[currentObject->currentAttack];
         }
 
-        heroAttackHitbox.y = currentObject->y + 16;
-        heroAttackHitbox.drawY = currentObject->drawY + 16;
+        heroAttackHitbox.y = currentObject->y + heroMoveHitboxOffsetY[currentObject->currentAttack];
+        heroAttackHitbox.drawY = currentObject->drawY + heroMoveHitboxOffsetY[currentObject->currentAttack];
     }
 
+    // Update move specific
     switch (currentObject->currentAttack)
     {
+    case HERO_ATTACK_UPPERCUT:
+        if (heroAttackHitbox.counter == heroMoveFrames[currentObject->currentAttack].startup)
+        {
+            if (!(currentObject->state & HERO_STATE_GROUNDED))
+            {
+                currentObject->speedY = HERO_UPPERCUT_JUMP_SPEED;
+            }
+            else
+            {
+                currentObject->speedY = HERO_UPPERCUT_VERTICALSPEED;
+            }
+
+            if (currentObject->direction & HERO_DIRECTION_LEFT)
+            {
+                currentObject->speedX = -HERO_UPPERCUT_HORIZONTALSPEED;
+            }
+            else
+            {
+                currentObject->speedX = HERO_UPPERCUT_HORIZONTALSPEED;
+            }
+        }
+
+        // Move visible hitbox away during uppercut
+        heroAttackHitbox.drawX = 200;
+        heroAttackHitbox.drawY = 200;
+
+        break;
     case 2:
     case 3:
         currentObject->invulnerability = 2;
@@ -398,15 +413,13 @@ BANKREF(updateHitbox)
 
 void drawHitbox(void) BANKED
 {
-    if (heroAttackHitbox.attribute & HITBOX_ACTIVE && currentObject->currentAttack != HERO_ATTACK_UPPERCUT)
+    if (heroAttackHitbox.attribute & HITBOX_ACTIVE)
     {
         move_sprite(12, heroAttackHitbox.drawX + DEVICE_SPRITE_PX_OFFSET_X, heroAttackHitbox.drawY + DEVICE_SPRITE_PX_OFFSET_Y - 8);
-        // move_sprite(13, heroAttackHitbox.drawX + DEVICE_SPRITE_PX_OFFSET_X, heroAttackHitbox.drawY + DEVICE_SPRITE_PX_OFFSET_Y);
     }
     else
     {
-        move_sprite(12, 320, 220);
-        // move_sprite(13, 320, 220);
+        move_sprite(12, 200, 200);
     }
 }
 BANKREF(drawHitbox)
@@ -417,30 +430,6 @@ void setupMove(uint8_t id) BANKED
 
     switch (id)
     {
-    case HERO_ATTACK_UPPERCUT:
-        if (!(currentObject->state & HERO_STATE_GROUNDED))
-        {
-            currentObject->speedY = HERO_UPPERCUT_JUMP_SPEED;
-        }
-        else
-        {
-            currentObject->speedY = HERO_UPPERCUT_VERTICALSPEED;
-        }
-
-        if (currentObject->direction & HERO_DIRECTION_LEFT)
-        {
-            currentObject->speedX = -HERO_UPPERCUT_HORIZONTALSPEED;
-        }
-        else
-        {
-            currentObject->speedX = HERO_UPPERCUT_HORIZONTALSPEED;
-        }
-
-        break;
-    case HERO_ATTACK_PUNCH_ONE:
-
-        break;
-
     case HERO_ATTACK_SIDESTEP:
         if (!(currentObject->state & HERO_STATE_GROUNDED))
             break;
@@ -477,6 +466,8 @@ void setupMove(uint8_t id) BANKED
     // Set move metadata and activate hitbox
     heroAttackHitbox.counter = heroMoveFrames[currentObject->currentAttack].length;
     heroAttackHitbox.damage = heroMoveFrames[currentObject->currentAttack].damage;
+    heroAttackHitbox.width = heroMoveHitboxWidth[currentObject->currentAttack];
+    heroAttackHitbox.height = heroMoveHitboxHeight[currentObject->currentAttack];
     heroAttackHitbox.attribute |= HITBOX_ACTIVE;
 }
 BANKREF(setupMove)
@@ -584,19 +575,22 @@ void heroInputs(void) NONBANKED
             {
                 currentObject->attackChargeCounter = HERO_TIMER_SIDESTEP_MAX;
                 if (currentObject->human)
-                    move_sprite(30, 24 + DEVICE_SPRITE_PX_OFFSET_X, 16 + DEVICE_SPRITE_PX_OFFSET_Y);
+                    //move_sprite(30, 24 + DEVICE_SPRITE_PX_OFFSET_X, 16 + DEVICE_SPRITE_PX_OFFSET_Y);
+                    set_sprite_tile(30, 67);
             }
             else
             {
                 if (currentObject->human)
-                    move_sprite(30, 16 + DEVICE_SPRITE_PX_OFFSET_X, 16 + DEVICE_SPRITE_PX_OFFSET_Y);
+                    //move_sprite(30, 16 + DEVICE_SPRITE_PX_OFFSET_X, 16 + DEVICE_SPRITE_PX_OFFSET_Y);
+                    set_sprite_tile(30, 66);
             }
         }
         else
         {
             currentObject->attackChargeCounter = 0;
             if (currentObject->human)
-                move_sprite(30, 10 + DEVICE_SPRITE_PX_OFFSET_X, 16 + DEVICE_SPRITE_PX_OFFSET_Y);
+                //move_sprite(30, 10 + DEVICE_SPRITE_PX_OFFSET_X, 16 + DEVICE_SPRITE_PX_OFFSET_Y);
+                set_sprite_tile(30, 65);
         }
     }
 
