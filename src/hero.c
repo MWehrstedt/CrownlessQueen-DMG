@@ -118,7 +118,7 @@ void initHero(void) NONBANKED
     hero.handleInput = &heroInputs;
     hero.update = &updateHero;
     hero.x = 20;
-    hero.y = 10;
+    hero.y = 48;
     hero.speedX = 0;
     hero.speedY = 0;
     hero.state = 0;
@@ -129,6 +129,7 @@ void initHero(void) NONBANKED
     hero.attackChargeCounter = 0;
 
     hero.animationCounter = 0;
+    currentObject->animationPlay = false;
     hero.drawFrameLength = 4;
     hero.drawFrameRate = 10;
     hero.strategyIndex = 0;
@@ -291,6 +292,13 @@ void updateHero(void) NONBANKED
     if (currentObject->invulnerability)
     {
         --currentObject->invulnerability;
+
+        // Adjust drawing position during Iframes
+        if (!(currentObject->invulnerability & 0x3))
+        {
+            currentObject->drawX = 160;
+            currentObject->drawY = 150;
+        }
     }
 
     if (currentObject->animationPlay && ++currentObject->animationCounter == currentObject->drawFrameRate)
@@ -493,6 +501,13 @@ void heroInputs(void) NONBANKED
         *currentJoypad = currentObject->strategy[currentObject->strategyIndex][currentObject->buttonIndex];
     }
 
+    // Movement
+    if (*currentJoypad & J_START && !(*currentPreviousJoypad & J_START))
+    {
+        // TODO: Show pause screen. For now, just reset everything.
+        game.state = GAME_STATE_INITGAMEPLAY;
+    }
+
     // If not attacking
     if (!(currentObject->state & HERO_STATE_ATTACKING) && !(currentObject->state & HERO_STATE_HURT))
     {
@@ -575,13 +590,13 @@ void heroInputs(void) NONBANKED
             {
                 currentObject->attackChargeCounter = HERO_TIMER_SIDESTEP_MAX;
                 if (currentObject->human)
-                    //move_sprite(30, 24 + DEVICE_SPRITE_PX_OFFSET_X, 16 + DEVICE_SPRITE_PX_OFFSET_Y);
+                    // move_sprite(30, 24 + DEVICE_SPRITE_PX_OFFSET_X, 16 + DEVICE_SPRITE_PX_OFFSET_Y);
                     set_sprite_tile(30, 67);
             }
             else
             {
                 if (currentObject->human)
-                    //move_sprite(30, 16 + DEVICE_SPRITE_PX_OFFSET_X, 16 + DEVICE_SPRITE_PX_OFFSET_Y);
+                    // move_sprite(30, 16 + DEVICE_SPRITE_PX_OFFSET_X, 16 + DEVICE_SPRITE_PX_OFFSET_Y);
                     set_sprite_tile(30, 66);
             }
         }
@@ -589,7 +604,7 @@ void heroInputs(void) NONBANKED
         {
             currentObject->attackChargeCounter = 0;
             if (currentObject->human)
-                //move_sprite(30, 10 + DEVICE_SPRITE_PX_OFFSET_X, 16 + DEVICE_SPRITE_PX_OFFSET_Y);
+                // move_sprite(30, 10 + DEVICE_SPRITE_PX_OFFSET_X, 16 + DEVICE_SPRITE_PX_OFFSET_Y);
                 set_sprite_tile(30, 65);
         }
     }

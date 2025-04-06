@@ -47,7 +47,7 @@ void initBossDbg(void) NONBANKED
 
     enemy.health = 32;
     enemy.maxHealth = 32;
-    enemy.x = 115;
+    enemy.x = 104;
     enemy.y = 48;
     enemy.speedX = 0;
     enemy.speedY = 0;
@@ -199,6 +199,13 @@ void updateBossDbg(void) NONBANKED
     if (currentObject->invulnerability)
     {
         --currentObject->invulnerability;
+
+        // Adjust drawing position during Iframes
+        if (!(currentObject->invulnerability & 0x3))
+        {
+            currentObject->drawX = 160;
+            currentObject->drawY = 150;
+        }
     }
 
     // Face player
@@ -226,12 +233,12 @@ void updateBossDbg(void) NONBANKED
     {
         updateBossDbgDrawFrames();
     }
-// #if defined(GAMEGEAR)
-//     // On Game Gear, load flipped sprite set due to no sprite flipping
-//     if (previousDirection2 != currentObject->direction)
-//     {
-//         loadPlayer2Sprites();
-//     }
-// #endif
+    // #if defined(GAMEGEAR)
+    //     // On Game Gear, load flipped sprite set due to no sprite flipping
+    //     if (previousDirection2 != currentObject->direction)
+    //     {
+    //         loadPlayer2Sprites();
+    //     }
+    // #endif
 }
 BANKREF(updateBossDbg)

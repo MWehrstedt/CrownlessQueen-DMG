@@ -11,6 +11,16 @@
 #include "../res/gb/sgb_border.h"
 #endif
 
+void initTraining(void)
+{
+    currentObject = &hero;
+    initHero();
+    currentObject = &enemy;
+    initBossDbg();
+
+    game.state = GAME_STATE_GAMEPLAY;
+}
+
 void main(void)
 {
 #if defined(GAMEGEAR)
@@ -37,19 +47,18 @@ void main(void)
 #endif
 
     initGfxMainMenu();
-    currentObject = &hero;
-    initHero();
-    currentObject = &enemy;
-    initBossDbg();
-    game.state = GAME_STATE_GAMEPLAY;
 
-    game.selectedSpecials = HERO_ATTACK_UPPERCUT;
+    game.state = GAME_STATE_INITGAMEPLAY;
+    // game.selectedSpecials = HERO_ATTACK_UPPERCUT;
 
     // Loop forever
     while (1)
     {
         switch (game.state)
         {
+        case GAME_STATE_INITGAMEPLAY:
+            initTraining();
+            break;
         case GAME_STATE_GAMEPLAY:
             // Game main loop processing goes here
             // Scroll background here to avoid screen tearing
