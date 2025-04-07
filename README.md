@@ -1,6 +1,9 @@
 # The Crownless Queen
 Think Mega Man bosses, but with a boxer. Made for DMG and Game Gear. It aims to run on original hardware and uses MBC5 (for DMG).
 
+> [!WARNING]
+> Game Gear is currently borked due to audio.
+
 # Controls
 
 | Button Game Boy | Button Game Gear | Action |
@@ -30,5 +33,8 @@ compile.bat [-nostartgb] [-nostartgg]
 > Makefiles do not work now. I might fix them, eventually. Maybe.
 
 
-## Frameworks
-Made with [GBDK 2020 version 4.3.0](https://github.com/gbdk-2020/gbdk-2020)
+# Frameworks and Tools
+
+- GBDK-2020 Version 4.3.0 by the GBDK Team - [Link](https://github.com/gbdk-2020/gbdk-2020)
+- **BMG** hUGEDriver Version 6.1.3 by SuperDisk - [Link](https://github.com/SuperDisk/hUGEDriver)
+- **SFX** CBT-FX by coffeevalenbat - [Link](https://github.com/coffeevalenbat/CBT-FX/)

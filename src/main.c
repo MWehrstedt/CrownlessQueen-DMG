@@ -1,5 +1,6 @@
 #include <gbdk/platform.h>
 #include <stdint.h>
+#include "audio.h"
 #include "graphics.h"
 #include "collision.h"
 #include "hero.h"
@@ -43,11 +44,25 @@ void main(void)
                        sgb_border_map,
                        sizeof(sgb_border_map),
                        sgb_border_palettes, sizeof(sgb_border_palettes));
+        //CBTFX_SGB = 0xff;
     }
+
+    NR52_REG = 0x80;
+    NR51_REG = 0xFF;
+    NR50_REG = 0x77;
 #endif
+
+    // __critical
+    // {
+    //     // SWITCH_ROM(3);
+    //     hUGE_init(&sample_song);
+    //     add_VBL(hUGE_dosound);
+    //     // SWITCH_ROM(0);
+    // }
 
     initGfxMainMenu();
 
+    initSong();
     game.state = GAME_STATE_INITGAMEPLAY;
     // game.selectedSpecials = HERO_ATTACK_UPPERCUT;
 
@@ -86,7 +101,7 @@ void main(void)
             // On Game Gear, load flipped sprite set due to no sprite flipping
             if (previousDirection1 != currentObject->direction)
             {
-                wait_vbl_done();
+                vsync();
                 loadPlayer1Sprites();
             }
 #endif
@@ -106,7 +121,7 @@ void main(void)
             // On Game Gear, load flipped sprite set due to no sprite flipping
             if (previousDirection2 != currentObject->direction)
             {
-                wait_vbl_done();
+                vsync();
                 loadPlayer2Sprites();
             }
 #endif
@@ -117,7 +132,9 @@ void main(void)
             break;
         }
 
+        playSong();
+
         // Done processing, yield CPU and wait for start of next frame
-        wait_vbl_done();
+        vsync();
     }
 }

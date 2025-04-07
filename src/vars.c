@@ -7,6 +7,9 @@
 int8_t temp;
 BANKREF(temp)
 
+uint8_t music_paused;
+BANKREF(music_paused)
+
 uint8_t iterator;
 BANKREF(iterator)
 

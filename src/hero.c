@@ -1,4 +1,5 @@
 #include <gbdk/platform.h>
+#include "audio.h"
 #include "heroAnimations.h"
 #include "graphics.h"
 #include "hero.h"
@@ -6,6 +7,7 @@
 #include "moves.h"
 #include "strategies.h"
 #include "vars.h"
+
 
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
@@ -535,6 +537,8 @@ void heroInputs(void) NONBANKED
             currentObject->speedY = HERO_JUMP_SPEED;
             currentObject->state |= HERO_STATE_JUMPING;
             currentObject->state &= ~HERO_STATE_WALKING;
+
+            playSFX();
         }
 
         // Charging uppercut

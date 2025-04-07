@@ -26,6 +26,12 @@ for /f %%f in ('dir res\SFX\*.c /b') do (
     SET COMP_STRING=!COMP_STRING! obj\%%~nf.o
 )
 
+for /f %%f in ('dir res\bgm\*.c /b') do (
+    bin\lcc -c -o obj\%%~nf.o res\bgm\%%~nf.c -debug
+    ECHO res\bgm\%%f
+    SET COMP_STRING=!COMP_STRING! obj\%%~nf.o
+)
+
 for /f %%f in ('dir res\*.c /b') do (
     bin\lcc -c -o obj\%%~nf.o res\%%~nf.c -debug
     ECHO res\%%f
@@ -40,11 +46,7 @@ for /f %%f in ('dir res\gb\*.c /b') do (
 
 REM source files
 ECHO -- Compiling source files --
-for /f %%f in ('dir src\*.c /b') do (
-    bin\lcc -c -o obj\%%~nf.o src\%%~nf.c -debug
-    ECHO src\%%f
-    SET COMP_STRING=!COMP_STRING! obj\%%~nf.o
-)
+
 
 for /f %%f in ('dir src\gb\*.c /b') do (
     bin\lcc -c -o obj\gb\%%~nf.o src\gb\%%~nf.c -debug
@@ -52,11 +54,16 @@ for /f %%f in ('dir src\gb\*.c /b') do (
     SET COMP_STRING=!COMP_STRING! obj\gb\%%~nf.o
 )
 
+for /f %%f in ('dir src\*.c /b') do (
+    bin\lcc -c -o obj\%%~nf.o src\%%~nf.c -debug
+    ECHO src\%%f
+    SET COMP_STRING=!COMP_STRING! obj\%%~nf.o
+)
+
 
 ECHO obj\%GAME_RESULT%
 
-bin\lcc -o obj\%GAME_RESULT% %COMP_STRING% -Wm-yn%GAME_TITLE% -Wl-yt0x19 -Wl-j -Wm-yoA -Wm-ys -autobank -Wb-ext=.rel -Wb-v -debug
-rem bin\lcc -o obj\%GAME_RESULT% %COMP_STRING% res/hUGEDriver.lib -Wm-yn%GAME_TITLE% -debug
+bin\lcc -Wl-llib/hUGEDriver.lib -o obj\%GAME_RESULT% %COMP_STRING% -Wm-yn%GAME_TITLE% -Wl-yt0x19 -Wl-j -Wm-yoA -Wm-ys -autobank -Wb-ext=.rel -Wb-v -debug
 
 ECHO %COMP_STRING%
 ECHO === End Compile %GAME_RESULT% ===

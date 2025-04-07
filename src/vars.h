@@ -7,6 +7,10 @@
 extern int8_t temp;
 BANKREF_EXTERN(temp)
 
+/// @brief Music control
+extern uint8_t music_paused;
+BANKREF_EXTERN(music_paused)
+
 /// @brief Global level 1 iterator
 extern uint8_t iterator;
 BANKREF_EXTERN(iterator)
