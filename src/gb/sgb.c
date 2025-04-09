@@ -5,7 +5,6 @@
 #include <gb/gb.h>
 #include <gb/sgb.h>
 
-
 #define SGB_CHR_BLOCK0 0
 #define SGB_CHR_BLOCK1 1
 
@@ -14,13 +13,13 @@
 
 #define SGB_TRANSFER(A, B) map_buf[0] = (A), map_buf[1] = (B), sgb_transfer(map_buf)
 
-#pragma bank 255
+#pragma bank 4
 
 // The display must be turned on before calling this function
 // (with @ref DISPLAY_ON).
 void set_sgb_border(unsigned char *tiledata, size_t tiledata_size,
                     unsigned char *tilemap, size_t tilemap_size,
-                    unsigned char *palette, size_t palette_size)
+                    unsigned char *palette, size_t palette_size) BANKED
 {
     if (sgb_check())
     {
@@ -80,3 +79,4 @@ void set_sgb_border(unsigned char *tiledata, size_t tiledata_size,
         SGB_TRANSFER((SGB_MASK_EN << 3) | 1, SGB_SCR_UNFREEZE);
     }
 }
+BANKREF(set_sgb_border)

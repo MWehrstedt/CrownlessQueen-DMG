@@ -89,7 +89,7 @@ void initGfxMainMenu(void) BANKED
     set_sprite_tile(12, 64);
     set_sprite_tile(30, 65);
 
-    move_sprite(30, 48 + DEVICE_SPRITE_PX_OFFSET_X, 120 + DEVICE_SPRITE_PX_OFFSET_Y);
+    move_sprite(30, 53 + DEVICE_SPRITE_PX_OFFSET_X, 128 + DEVICE_SPRITE_PX_OFFSET_Y);
 
     // Turn the on visible layers to make it visible
     SHOW_BKG;

@@ -1,6 +1,6 @@
 /*
 
- LEVELHERO_TILES.H
+ LEVELHERO_TILES-GB.H
 
  Include File.
 
@@ -10,7 +10,7 @@
   Compression          : GB-Compress.
   Counter              : None.
   Tile size            : 8 x 8
-  Tiles                : 0 to 79
+  Tiles                : 0 to 31
 
   Palette colors       : Included.
   SGB Palette          : None.
@@ -22,8 +22,8 @@
 
 */
 
-#ifndef __levelHero_tiles_h_INCLUDE
-#define __levelHero_tiles_h_INCLUDE
+#ifndef __levelHero_tiles_gb_h_INCLUDE
+#define __levelHero_tiles_gb_h_INCLUDE
 
 /* Bank of tiles. */
 #define levelHero_tilesBank 0
@@ -104,4 +104,4 @@ extern const unsigned char levelHero_tiles[];
 
 #endif
 
-/* End of LEVELHERO_TILES.H */
+/* End of LEVELHERO_TILES-GB.H */

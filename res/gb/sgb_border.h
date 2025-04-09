@@ -11,7 +11,7 @@
 #define sgb_border_TILE_H 8
 #define sgb_border_WIDTH 256
 #define sgb_border_HEIGHT 224
-#define sgb_border_TILE_COUNT 107
+#define sgb_border_TILE_COUNT 193
 #define sgb_border_PALETTE_COUNT 1
 #define sgb_border_COLORS_PER_PALETTE 16
 #define sgb_border_TOTAL_COLORS 16
@@ -26,6 +26,6 @@ extern const unsigned char sgb_border_map[1792];
 BANKREF_EXTERN(sgb_border)
 
 extern const palette_color_t sgb_border_palettes[16];
-extern const uint8_t sgb_border_tiles[3424];
+extern const uint8_t sgb_border_tiles[6176];
 
 #endif

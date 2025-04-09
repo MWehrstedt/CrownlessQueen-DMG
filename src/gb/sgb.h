@@ -22,6 +22,7 @@
 */
 void set_sgb_border(unsigned char *tiledata, size_t tiledata_size,
                     unsigned char *tilemap, size_t tilemap_size,
-                    unsigned char *palette, size_t palette_size);
+                    unsigned char *palette, size_t palette_size) BANKED;
+BANKREF_EXTERN(set_sgb_border)
 
 #endif
