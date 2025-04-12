@@ -1,5 +1,6 @@
 #include <gbdk/platform.h>
 #include "animations.h"
+#include "audio.h"
 #include "boss_debug.h"
 #include "collision.h"
 #include "graphics.h"
@@ -164,6 +165,8 @@ void updateBossDbg(void) NONBANKED
             currentObject->speedX = -HERO_KNOCKBACK_HORIZONTAL;
 
         currentObject->speedY = HERO_KNOCKBACK_VERTICAL;
+
+        playSFX(4);
     }
 
     /*  ----------------

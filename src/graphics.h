@@ -7,6 +7,9 @@
 void initGfxMainMenu(void) BANKED;
 BANKREF_EXTERN(initGfxMainMenu)
 
+void initGfxTraining(void) BANKED;
+BANKREF_EXTERN(initGfxTraining)
+
 void updateHealthBar(void) BANKED;
 BANKREF_EXTERN(updateHealthBar)
 

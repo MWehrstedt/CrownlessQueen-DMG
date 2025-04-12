@@ -105,7 +105,7 @@ const int8_t *heroUppercutFrames[4] = {
     heroUppercutFramesTiles,
     heroUppercutFramesXLeft,
     heroUppercutFramesXRight,
-    heroJumpingFramesY,
+    heroUppercutFramesY,
 };
     
 const int8_t heroUppercutFramesTiles[1*12] = {
@@ -118,6 +118,10 @@ const int8_t heroUppercutFramesXRight[12] = {
 
 const int8_t heroUppercutFramesXLeft[12] = {
     16, 8, 0, 16, 8, 0, 16, 8, 0, 10, 0, 0
+};
+
+const int8_t heroUppercutFramesY[12] = {
+    0, 0, 0, 8, 8, 8, 16, 16, 16, 24, 120, 120
 };
 
 const int8_t *heroHurtFrames[4] = {

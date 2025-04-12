@@ -14,6 +14,9 @@
 
 void initTraining(void)
 {
+    DISPLAY_OFF;
+    initGfxTraining();
+
     currentObject = &hero;
     initHero();
     currentObject = &enemy;
@@ -44,7 +47,7 @@ void main(void)
                        sgb_border_map,
                        sizeof(sgb_border_map),
                        sgb_border_palettes, sizeof(sgb_border_palettes));
-        //CBTFX_SGB = 0xff;
+        // CBTFX_SGB = 0xff;
     }
 
     NR52_REG = 0x80;
@@ -52,25 +55,19 @@ void main(void)
     NR50_REG = 0x77;
 #endif
 
-    // __critical
-    // {
-    //     // SWITCH_ROM(3);
-    //     hUGE_init(&sample_song);
-    //     add_VBL(hUGE_dosound);
-    //     // SWITCH_ROM(0);
-    // }
-
+    initSong();
     initGfxMainMenu();
 
-    initSong();
-    game.state = GAME_STATE_INITGAMEPLAY;
-    // game.selectedSpecials = HERO_ATTACK_UPPERCUT;
+    game.state = GAME_STATE_MAINMENU;
 
     // Loop forever
     while (1)
     {
         switch (game.state)
         {
+        case GAME_STATE_MAINMENU:
+            mainmenuInputs();
+            break;
         case GAME_STATE_INITGAMEPLAY:
             initTraining();
             break;

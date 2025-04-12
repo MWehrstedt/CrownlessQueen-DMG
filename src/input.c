@@ -6,12 +6,20 @@
 #pragma bank 255
 
 /// @brief Handles inputs on main menu screen
-void globalInputs(void) NONBANKED
+void mainmenuInputs(void) NONBANKED
 {
-    // joypadCurrent = joypad();
+    joypadCurrent = joypad();
 
     // Check for global reset
-    // if(joypadCurrent & )
+    // if(joypadCurrent & (J_A & J_B & J_START & J_SELECT) && !(joypadPrevious & (J_A & J_B & J_START & J_SELECT)))
+    // {
+    //     reset();
+    // }
 
-    // joypadPrevious = joypadCurrent;
+    if(joypadCurrent & J_START && !(joypadPrevious & J_START))
+    {
+        game.state = GAME_STATE_INITGAMEPLAY;
+    }
+
+    joypadPrevious = joypadCurrent;
 }

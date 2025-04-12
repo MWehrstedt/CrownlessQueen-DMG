@@ -211,6 +211,8 @@ void updateHero(void) NONBANKED
             currentObject->speedX = -HERO_KNOCKBACK_HORIZONTAL;
 
         currentObject->speedY = HERO_KNOCKBACK_VERTICAL;
+
+        playSFX(3);
     }
 
     /*  ----------------
@@ -504,7 +506,7 @@ void heroInputs(void) NONBANKED
     }
 
     // Movement
-    if (*currentJoypad & J_START && !(*currentPreviousJoypad & J_START))
+    if (*currentJoypad & J_SELECT && !(*currentPreviousJoypad & J_SELECT))
     {
         // TODO: Show pause screen. For now, just reset everything.
         game.state = GAME_STATE_INITGAMEPLAY;
@@ -538,7 +540,7 @@ void heroInputs(void) NONBANKED
             currentObject->state |= HERO_STATE_JUMPING;
             currentObject->state &= ~HERO_STATE_WALKING;
 
-            playSFX();
+            playSFX(2);
         }
 
         // Charging uppercut
@@ -584,6 +586,7 @@ void heroInputs(void) NONBANKED
             else
             {
                 setupMove(HERO_ATTACK_PUNCH_ONE);
+                playSFX(5);
             }
         }
 

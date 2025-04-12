@@ -2,6 +2,8 @@
 #include <gbdk/gbdecompress.h>
 #include <stdlib.h>
 #if defined(GAMEBOY)
+#include "../res/gb/mainMenu_tiles.h"
+#include "../res/gb/mainMenu_map.h"
 #include "../res/gb/levelHero_map-gb.h"
 #include "../res/gb/levelHero_tiles-gb.h"
 #include "../res/gb/heroTiles-gb.h"
@@ -24,6 +26,32 @@
 
 BANKREF(initGfxMainMenu)
 void initGfxMainMenu(void) BANKED
+{
+
+    /*
+        Load tile data in DMG format
+    */
+    uint8_t buffer[4096];
+
+    // Load decompressed tiles into bkg
+    set_bkg_data(0, gb_decompress(mainMenu_tiles, buffer) >> 4, buffer);
+
+    free(buffer);
+
+    // Set bkg map
+    set_bkg_tiles(0, 0, 20u, 18u, mainMenu_mapPLN0);
+
+    // Turn the on visible layers to make it visible
+    SHOW_BKG;
+    HIDE_SPRITES;
+#if defined(GAMEBOY)
+    HIDE_WIN;
+#endif
+    DISPLAY_ON;
+}
+
+BANKREF(initGfxTraining)
+void initGfxTraining(void) BANKED
 {
 
 #if defined(GAMEBOY)

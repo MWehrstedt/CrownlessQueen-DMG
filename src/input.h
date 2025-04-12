@@ -4,6 +4,6 @@
 #define __INPUT_H__
 
 /// @brief Handles global inputs
-void globalInputs(void) NONBANKED;
+void mainmenuInputs(void) NONBANKED;
 
 #endif
