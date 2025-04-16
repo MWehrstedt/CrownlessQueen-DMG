@@ -16,4 +16,10 @@ BANKREF_EXTERN(playSFX)
 void initSoundEngine(void) BANKED;
 BANKREF_EXTERN(initSoundEngine)
 
+void muteAudio(void) BANKED;
+BANKREF_EXTERN(muteAudio)
+
+void unmuteAudio(void) BANKED;
+BANKREF_EXTERN(unmuteAudio)
+
 #endif

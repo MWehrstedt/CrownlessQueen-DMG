@@ -24,7 +24,7 @@ void checkCollisionBackgroundX(void) BANKED
         targetTileHorizontal.center = ((currentObject->x + currentObject->speedX + HITBOX_OFFSET_LEFT) / HITBOX_TILESIZE) + (((currentObject->y + 12) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
         targetTileHorizontal.centerValue = hitmapPool[0][targetTileHorizontal.center];
 
-        targetTileHorizontal.bottom = ((currentObject->x + currentObject->speedX + HITBOX_OFFSET_LEFT) / HITBOX_TILESIZE) + (((currentObject->y + 24 - HITBOX_OFFSET_BOTTOM) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
+        targetTileHorizontal.bottom = ((currentObject->x + currentObject->speedX + HITBOX_OFFSET_LEFT) / HITBOX_TILESIZE) + (((currentObject->y + 24) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
     }
     else
     {
@@ -32,7 +32,7 @@ void checkCollisionBackgroundX(void) BANKED
         targetTileHorizontal.center = ((currentObject->x + currentObject->speedX + HITBOX_SIZE_X - HITBOX_OFFSET_RIGHT) / HITBOX_TILESIZE) + (((currentObject->y + 12) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
         targetTileHorizontal.centerValue = hitmapPool[0][targetTileHorizontal.center];
 
-        targetTileHorizontal.bottom = ((currentObject->x + currentObject->speedX + HITBOX_SIZE_X - HITBOX_OFFSET_RIGHT) / HITBOX_TILESIZE) + (((currentObject->y + 24 - HITBOX_OFFSET_BOTTOM) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
+        targetTileHorizontal.bottom = ((currentObject->x + currentObject->speedX + HITBOX_SIZE_X - HITBOX_OFFSET_RIGHT) / HITBOX_TILESIZE) + (((currentObject->y + 24) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
     }
 }
 
@@ -48,7 +48,7 @@ void checkCollisionBackgroundY(void) BANKED
         targetTileVertical.center = ((currentObject->x + 8) / HITBOX_TILESIZE) + (((currentObject->y + currentObject->speedY + HITBOX_OFFSET_TOP) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
         targetTileVertical.centerValue = hitmapPool[0][targetTileVertical.center];
 
-        targetTileVertical.bottom = ((currentObject->x + 16 - HITBOX_OFFSET_RIGHT) / HITBOX_TILESIZE) + (((currentObject->y + currentObject->speedY - HITBOX_OFFSET_BOTTOM) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
+        targetTileVertical.bottom = ((currentObject->x + 16 - HITBOX_OFFSET_RIGHT) / HITBOX_TILESIZE) + (((currentObject->y + currentObject->speedY) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
     }
     else
     {
@@ -56,7 +56,7 @@ void checkCollisionBackgroundY(void) BANKED
         targetTileVertical.center = ((currentObject->x + 8) / HITBOX_TILESIZE) + (((currentObject->y + currentObject->speedY + HITBOX_SIZE_Y) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
         targetTileVertical.centerValue = hitmapPool[0][targetTileVertical.center];
 
-        targetTileVertical.bottom = ((currentObject->x + 16 - HITBOX_OFFSET_RIGHT) / HITBOX_TILESIZE) + (((currentObject->y + currentObject->speedY + HITBOX_SIZE_Y - HITBOX_OFFSET_BOTTOM) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
+        targetTileVertical.bottom = ((currentObject->x + 16 - HITBOX_OFFSET_RIGHT) / HITBOX_TILESIZE) + (((currentObject->y + currentObject->speedY + HITBOX_SIZE_Y) / HITBOX_TILESIZE) * HITBOX_MAPSIZE_X);
     }
 }
 
@@ -75,6 +75,6 @@ bool checkCollisionHitbox(void) BANKED
 {
     return heroAttackHitbox.x < enemy.x + ENEMY_BOSSDBG_HITBOX_OFFSET_LEFT + ENEMY_BOSSDBG_HITBOX_SIZE_X &&
            heroAttackHitbox.x + heroAttackHitbox.width > enemy.x + ENEMY_BOSSDBG_HITBOX_OFFSET_LEFT &&
-           heroAttackHitbox.y < enemy.y + ENEMY_BOSSDBG_HITBOX_SIZE_Y - ENEMY_BOSSDBG_HITBOX_OFFSET_BOTTOM &&
+           heroAttackHitbox.y < enemy.y + ENEMY_BOSSDBG_HITBOX_SIZE_Y &&
            heroAttackHitbox.y + heroAttackHitbox.height > enemy.y + ENEMY_BOSSDBG_HITBOX_OFFSET_TOP;
 }

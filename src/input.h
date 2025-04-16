@@ -6,4 +6,8 @@
 /// @brief Handles global inputs
 void mainmenuInputs(void) NONBANKED;
 
+
+/// @brief Handles pause inputs
+void pauseInputs(void) NONBANKED;
+
 #endif

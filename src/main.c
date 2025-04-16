@@ -22,6 +22,36 @@ void initTraining(void)
     currentObject = &enemy;
     initBossDbg();
 
+    unmuteAudio();
+    game.state = GAME_STATE_GAMEPLAY;
+}
+
+void initMainMenu(void)
+{
+    DISPLAY_OFF;
+    initGfxMainMenu();
+    muteAudio();
+    game.state = GAME_STATE_MAINMENU;
+    
+}
+
+void pausing(void)
+{
+    HIDE_SPRITES;
+    // TODO: transition smoothly
+    move_win(7, 80);
+
+    muteAudio();
+    game.state = GAME_STATE_PAUSED;
+}
+
+void unpausing(void)
+{
+    SHOW_SPRITES;
+    // TODO: transition smoothly
+    move_win(7, 112);
+
+    unmuteAudio();
     game.state = GAME_STATE_GAMEPLAY;
 }
 
@@ -56,21 +86,34 @@ void main(void)
 #endif
 
     initSong();
-    initGfxMainMenu();
 
-    game.state = GAME_STATE_MAINMENU;
+    game.state = GAME_STATE_INTRO;
+    game.selectedMenuItem = 0;
 
     // Loop forever
     while (1)
     {
         switch (game.state)
         {
+        case GAME_STATE_INTRO:
+            initMainMenu();
+            break;
         case GAME_STATE_MAINMENU:
             mainmenuInputs();
             break;
         case GAME_STATE_INITGAMEPLAY:
             initTraining();
             break;
+        case GAME_STATE_PAUSING:
+            pausing();
+            break;
+        case GAME_STATE_UNPAUSING:
+            unpausing();
+            break;
+        case GAME_STATE_PAUSED:
+            pauseInputs();
+            break;
+
         case GAME_STATE_GAMEPLAY:
             // Game main loop processing goes here
             // Scroll background here to avoid screen tearing

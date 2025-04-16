@@ -74,12 +74,18 @@ void initGfxTraining(void) BANKED
 
     // Load decompressed tiles into spr
     set_sprite_data(1, gb_decompress(heroTiles_tiles, buffer) >> 4, buffer);
-    set_sprite_data(70, gb_decompress(bossDbgTiles, buffer) >> 4, buffer);
+    set_sprite_data(80, gb_decompress(bossDbgTiles, buffer) >> 4, buffer);
 
     free(buffer);
 
     // Set bkg map
     set_bkg_tiles(0, 0, 20u, 14u, levelHero_map);
+
+    // Set hero palette
+    OBP0_REG = DMG_PALETTE(DMG_WHITE, DMG_LITE_GRAY, DMG_WHITE, DMG_BLACK);
+
+    // Set enemy palette
+    OBP1_REG = DMG_PALETTE(DMG_WHITE, DMG_LITE_GRAY, DMG_DARK_GRAY, DMG_BLACK);
 
 #elif defined(GAMEGEAR)
     /*
@@ -102,20 +108,23 @@ void initGfxTraining(void) BANKED
 
 #endif
 
+    
     // Set hero and enemy tiles
     for (iterator = 0; iterator < 12; ++iterator)
     {
         set_sprite_tile(OAM_HERO_SPRITEID + iterator, 0);
+        set_sprite_prop(OAM_HERO_SPRITEID + iterator, ~S_PALETTE);
     }
 
     for (iterator = 0; iterator < 9; ++iterator)
     {
         set_sprite_tile(OAM_ENEMY_SPRITEID + iterator, 0);
+        set_sprite_prop(OAM_ENEMY_SPRITEID + iterator, S_PALETTE);
     }
 
     // DEBUG: assign hitbox sprites
-    set_sprite_tile(12, 64);
-    set_sprite_tile(30, 65);
+    set_sprite_tile(12, OAM_HITBOX_SPRITEID);
+    set_sprite_tile(30, OAM_HITBOX_SPRITEID + 1);
 
     move_sprite(30, 53 + DEVICE_SPRITE_PX_OFFSET_X, 128 + DEVICE_SPRITE_PX_OFFSET_Y);
 

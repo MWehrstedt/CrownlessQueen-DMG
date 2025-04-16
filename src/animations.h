@@ -82,10 +82,8 @@ extern const int8_t bossDbgIdleFramesXRight[12];
 
 extern const int8_t bossDbgIdleFramesY[12];
 
-extern const int8_t bossDbgIdleFramesTiles[2 * 12];
-
 extern const int8_t *bossDbgFrames[4];
 
-extern const int8_t bossDbgIdleTiles[9];
+extern const int8_t bossDbgIdleTiles[12];
 
 #endif

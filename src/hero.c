@@ -36,6 +36,10 @@ void updateHeroDrawFrames(void)
         {
             currentObject->drawFrames = heroUppercutFrames;
         }
+        else if (currentObject->currentAttack == HERO_ATTACK_SIDESTEP)
+        {
+            currentObject->drawFrames = heroSideStepFrames;
+        }
         else if (currentObject->state & HERO_STATE_JUMPING)
         {
             currentObject->drawFrames = heroJumpingAttackFrames;
@@ -415,8 +419,9 @@ void updateHitbox(void) BANKED
         heroAttackHitbox.drawY = 200;
 
         break;
-    case 2:
-    case 3:
+    case HERO_ATTACK_SIDESTEP:
+        break;
+    case HERO_ATTACK_DASH:
         currentObject->invulnerability = 2;
         break;
     }
@@ -455,7 +460,7 @@ void setupMove(uint8_t id) BANKED
             currentObject->speedX = HERO_SIDESTEP_SPEED;
         }
 
-        currentObject->invulnerability = 1;
+        //currentObject->invulnerability = 1;
 
         break;
     case HERO_ATTACK_DASH:
@@ -471,7 +476,7 @@ void setupMove(uint8_t id) BANKED
             currentObject->speedX = HERO_DASH_SPEED;
         }
 
-        currentObject->invulnerability = 1;
+        currentObject->invulnerability = 2;
         break;
     }
 
@@ -505,11 +510,15 @@ void heroInputs(void) NONBANKED
         *currentJoypad = currentObject->strategy[currentObject->strategyIndex][currentObject->buttonIndex];
     }
 
-    // Movement
+    // Menu
     if (*currentJoypad & J_SELECT && !(*currentPreviousJoypad & J_SELECT))
     {
         // TODO: Show pause screen. For now, just reset everything.
         game.state = GAME_STATE_INITGAMEPLAY;
+    }
+    if (*currentJoypad & J_START && !(*currentPreviousJoypad & J_START))
+    {
+        game.state = GAME_STATE_PAUSING;
     }
 
     // If not attacking
@@ -597,22 +606,19 @@ void heroInputs(void) NONBANKED
             {
                 currentObject->attackChargeCounter = HERO_TIMER_SIDESTEP_MAX;
                 if (currentObject->human)
-                    // move_sprite(30, 24 + DEVICE_SPRITE_PX_OFFSET_X, 16 + DEVICE_SPRITE_PX_OFFSET_Y);
-                    set_sprite_tile(30, 67);
+                    set_sprite_tile(30, OAM_HITBOX_SPRITEID + 3);
             }
             else
             {
                 if (currentObject->human)
-                    // move_sprite(30, 16 + DEVICE_SPRITE_PX_OFFSET_X, 16 + DEVICE_SPRITE_PX_OFFSET_Y);
-                    set_sprite_tile(30, 66);
+                    set_sprite_tile(30, OAM_HITBOX_SPRITEID + 2);
             }
         }
         else
         {
             currentObject->attackChargeCounter = 0;
             if (currentObject->human)
-                // move_sprite(30, 10 + DEVICE_SPRITE_PX_OFFSET_X, 16 + DEVICE_SPRITE_PX_OFFSET_Y);
-                set_sprite_tile(30, 65);
+                set_sprite_tile(30, OAM_HITBOX_SPRITEID + 1);
         }
     }
 

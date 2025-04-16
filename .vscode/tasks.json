@@ -74,6 +74,17 @@
             "problemMatcher": []
         },
         {
+            "label": "Clean OBJ",
+            "type": "shell",
+            "command": "./clean.bat",
+            "args": [],
+            "group": "build",
+            "presentation": {
+                "reveal": "never"
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "Start all",
             "type": "shell",
             "command": "./compile.bat",

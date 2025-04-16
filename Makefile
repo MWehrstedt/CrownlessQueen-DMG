@@ -9,10 +9,11 @@ LCC = $(GBDK_HOME)bin/lcc
 # Set platforms to build here, spaced separated. (These are in the separate Makefile.targets)
 # They can also be built/cleaned individually: "make gg" and "make gg-clean"
 # Possible are: gb gbc pocket megaduck sms gg
-TARGETS=gb gg
+#TARGETS=gb gg
+TARGETS=gb
 
 # Configure platform specific LCC flags here:
-LCCFLAGS_gb      = -Wl-yt0x19  -Wm-ys -autobank # Set an MBC for banking
+LCCFLAGS_gb      = -Wl-yt0x19 -Wm-ys -autobank # Set an MBC for banking
 LCCFLAGS_gg      = -autobank
 
 LCCFLAGS += $(LCCFLAGS_$(EXT)) # This adds the current platform specific LCC Flags
@@ -26,7 +27,7 @@ endif
 
 
 # You can set the name of the ROM file here
-PROJECTNAME = powl
+PROJECTNAME = CROWNLSQUEN
 
 SRCDIR      = src
 OBJDIR      = obj/$(EXT)

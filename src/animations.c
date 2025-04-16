@@ -152,13 +152,6 @@ const int8_t bossDbgIdleFramesY[12] = {
     0, 0, 0, 8, 8, 8, 16, 16, 16, 120, 120, 120
 };
 
-const int8_t bossDbgIdleFramesTiles[2*12] = {
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0,
-    //10, 2, 3, 11, __12, __13, 7, 14, 15, 0, 0, 0,
-    10, 16, 17, 11, 18, 19, 7, 14, 15, 0, 0, 0,
-    //20, 16, 17, 21, 22, 23, 7, 8, 9, 0, 0, 0,
-};
-
 const int8_t *bossDbgFrames[4] = {
     bossDbgIdleTiles,
     bossDbgIdleFramesXRight,
@@ -166,6 +159,6 @@ const int8_t *bossDbgFrames[4] = {
     bossDbgIdleFramesY,
 };
 
-const int8_t bossDbgIdleTiles[9] = {
-    70, 71, 0, 72, 73, 0, 74, 75, 0,
+const int8_t bossDbgIdleTiles[12] = {
+    80, 81, 0, 82, 83, 0, 84, 85, 0, 0, 0, 0, 
 };
