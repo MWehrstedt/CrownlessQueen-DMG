@@ -30,13 +30,13 @@ void pauseInputs(void) NONBANKED
 {
     joypadCurrent = joypad();
 
-    if (joypadCurrent & J_RIGHT && !(joypadPrevious & J_RIGHT))
+    if (joypadCurrent & J_DOWN && !(joypadPrevious & J_DOWN))
     {
         game.selectedMenuItem = (++game.selectedMenuItem % 2);
         playSFX(0);
     }
 
-    if (joypadCurrent & J_LEFT && !(joypadPrevious & J_LEFT))
+    if (joypadCurrent & J_UP && !(joypadPrevious & J_UP))
     {
         if (game.selectedMenuItem == 0)
         {
@@ -49,18 +49,6 @@ void pauseInputs(void) NONBANKED
         playSFX(0);
     }
 
-    // Update WIN Tile for menu
-    if (!game.selectedMenuItem)
-    {
-        set_win_tile_xy(1, 6, 121);
-        set_win_tile_xy(14, 6, 100);
-    }
-    else
-    {
-        set_win_tile_xy(1, 6, 100);
-        set_win_tile_xy(14, 6, 121);
-    }
-
     if (joypadCurrent & J_A && !(joypadPrevious & J_A))
     {
         if (!game.selectedMenuItem)
@@ -71,11 +59,27 @@ void pauseInputs(void) NONBANKED
         {
             game.state = GAME_STATE_INTRO;
         }
+
+        game.selectedMenuItem = 0;
     }
 
-    if (joypadCurrent & J_START && !(joypadPrevious & J_START))
+    if ((joypadCurrent & J_START && !(joypadPrevious & J_START)) ||
+        joypadCurrent & J_B && !(joypadPrevious & J_B))
     {
         game.state = GAME_STATE_UNPAUSING;
+        game.selectedMenuItem = 0;
+    }
+
+    // Update WIN Tile for menu
+    if (!game.selectedMenuItem)
+    {
+        set_win_tile_xy(6, 13, 121);
+        set_win_tile_xy(6, 15, 100);
+    }
+    else
+    {
+        set_win_tile_xy(6, 13, 100);
+        set_win_tile_xy(6, 15, 121);
     }
 
     joypadPrevious = joypadCurrent;

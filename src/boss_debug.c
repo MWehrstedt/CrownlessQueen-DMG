@@ -1,5 +1,5 @@
 #include <gbdk/platform.h>
-#include "animations.h"
+#include "bossDbgAnimations.h"
 #include "audio.h"
 #include "boss_debug.h"
 #include "collision.h"
@@ -14,8 +14,13 @@ void updateBossDbgDrawFrames(void)
 {
     if (currentObject->state & HERO_STATE_HURT)
     {
+        currentObject->drawFrames = bossDbgHurtFrames;
         // update HUD
         updateHealthBar();
+    }
+    else
+    {
+        currentObject->drawFrames = bossDbgIdleFrames;
     }
 }
 
@@ -60,7 +65,7 @@ void initBossDbg(void) NONBANKED
 
     enemy.strategy = dummyStrategy;
     // enemy.strategy = bossDbgStrategies;
-    enemy.drawFrames = bossDbgFrames;
+    enemy.drawFrames = bossDbgIdleFrames;
 
     // Init HUD
     updateHealthBar();

@@ -18,7 +18,6 @@
 
 #endif
 #include "../res/windowMap.h"
-#include "animations.h"
 #include "graphics.h"
 #include "vars.h"
 
@@ -67,7 +66,7 @@ void initGfxTraining(void) BANKED
     set_win_data(100, gb_decompress(windowTiles, buffer) >> 4, buffer);
 
     // Set wnd map
-    set_win_tiles(0, 0, 20u, 8u, windowMap);
+    set_win_tiles(0, 0, 20u, 18u, windowMap);
 
     // Set wnd position
     move_win(7, 112);

@@ -39,7 +39,7 @@ void pausing(void)
 {
     HIDE_SPRITES;
     // TODO: transition smoothly
-    move_win(7, 80);
+    move_win(7, 0);
 
     muteAudio();
     game.state = GAME_STATE_PAUSED;

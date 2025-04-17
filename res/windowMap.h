@@ -7,7 +7,7 @@
  Info:
    Section       : 
    Bank          : 0
-   Map size      : 20 x 8
+   Map size      : 20 x 18
    Tile set      : D:\OneDrive\RetroDev\GameBoy\Projects\Owls\res\win.gbm.tiles.gbr
    Plane count   : 1 plane (8 bits)
    Plane order   : Tiles are continues
@@ -21,7 +21,7 @@
 #define __windowMap_h_INCLUDE
 
 #define windowMapWidth 20
-#define windowMapHeight 8
+#define windowMapHeight 18
 #define windowMapBank 0
 
 extern const unsigned char windowMap[];
